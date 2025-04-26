@@ -1,0 +1,71 @@
+recipe_creation:
+  description: >
+    À partir du titre de recette "{recipe}", élaborer une recette
+    détaillée avec ingrédients, proportions et instructions précises pour une
+    famille de 2 adultes et un enfant de 10 ans. La recette doit être
+    délicieuse, accessible et présenter une touche créative qui rendra le plat
+    attrayant pour un enfant sans sacrifier le goût pour les adultes.
+  expected_output: >
+    Une recette complète avec liste d'ingrédients (avec quantités), temps de
+    préparation, temps de cuisson, niveau de difficulté, et instructions
+    détaillées étape par étape.
+  agent: recipe_expert
+
+thermomix_adaptation:
+  description: >
+    Adapter la recette pour utilisation avec un Thermomix. La recette est
+    basée sur ce plat : {recipe}
+    Fournir des instructions claires pour chaque étape, en indiquant les
+    paramètres précis (vitesse, température, durée) pour le Thermomix.
+  expected_output: >
+    Version Thermomix de la recette avec paramètres précis pour chaque étape,
+    maintenant toutes les saveurs et la qualité de la recette originale.
+  agent: thermomix_adapter
+
+
+nutrition_evaluation:
+  description: >
+    Évaluer le profil nutritionnel de la recette pour : {recipe} 
+    Identifier les points forts et les améliorations possibles du point de vue nutritionnel,
+    particulièrement en considérant qu'elle sera servie à un enfant de 10 ans.
+  expected_output: >
+    Analyse nutritionnelle de la recette avec valeurs approximatives
+    (calories, macronutriments), points forts nutritionnels, et 2-3
+    suggestions concrètes d'amélioration sans compromettre le goût.
+  agent: nutritionist
+
+
+recipe_integration:
+  description: >
+    Intégrer des suggestions nutritionnelles à la recette Thermomix pour 
+    {recipe}, tout en préservant la saveur et la facilité de préparation.
+    Proposer des améliorations nutritionnelles adaptées aux enfants.
+  expected_output: >
+    Version améliorée de la recette Thermomix intégrant les suggestions
+    nutritionnelles, avec les modifications clairement indiquées.
+  agent: recipe_expert
+
+
+html_creation:
+  description: >
+    Créer une version HTML élégante et bien structurée de la recette finale
+    pour {recipe}. La présentation doit être professionnelle, facile à lire,
+    avec des sections claires pour les ingrédients, les étapes, les valeurs
+    nutritionnelles et les conseils spéciaux.
+  expected_output: >
+    Code HTML complet pour la recette, avec une mise en page attrayante,
+    utilisant des éléments HTML5 et CSS pour une présentation professionnelle.
+  agent: specialized_writer
+  output_file: "output/recipe_expert_crew/{recipe_id}.html"
+
+
+ingredient_list:
+  description: >
+    À partir de la recette finale pour {recipe}, générer une liste JSON
+    structurée de tous les ingrédients nécessaires avec leurs quantités.
+    Chaque ingrédient doit inclure nom, quantité et unité de mesure.
+  expected_output: >
+    Liste JSON des ingrédients au format: [{"name": "nom_ingrédient",
+    "quantity": valeur, "unit": "unité"}]
+  agent: recipe_expert
+  output_file: "output/recipe_expert_crew/{recipe_id}_ingredients.json"

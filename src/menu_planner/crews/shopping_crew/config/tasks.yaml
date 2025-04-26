@@ -1,0 +1,51 @@
+aggregate_ingredients:
+  description: >
+    Agréger tous les ingrédients de la liste de recettes de la semaine. Pour
+    chaque recette dans la liste, récupérer les ingrédients à partir des
+    fichiers  JSON générés précédemment. Combiner les ingrédients similaires
+    et calculer les quantités totales nécessaires pour la semaine entière.
+  expected_output: >
+    Une liste complète de tous les ingrédients nécessaires pour le menu de la
+    semaine, avec les quantités totales et les unités appropriées. Format:
+    [{"name": "nom_ingrédient",  "quantity": quantité_totale, "unit":
+    "unité"}]
+  agent: ingredient_organizer
+
+organize_by_category:
+  description: >
+    Organiser les ingrédients par rayons de supermarché pour faciliter les
+    courses. Catégories suggérées: Fruits et Légumes, Boucherie/Poissonnerie,
+    Produits Laitiers, Épicerie, Boulangerie, Surgelés, Condiments et Épices.
+  expected_output: >
+    Une liste d'ingrédients organisée par catégories de supermarché, avec
+    sous-totaux par section. Format JSON structuré par catégories.
+  agent: ingredient_organizer
+  dependencies:
+    - aggregate_ingredients
+
+create_html_shopping_list:
+  description: >
+    Créer une liste de courses élégante et fonctionnelle en HTML à partir des
+    ingrédients  catégorisés. Inclure des cases à cocher interactives, des
+    en-têtes clairs pour chaque  rayon, et une mise en page adaptée à
+    l'impression ou à la consultation sur mobile. Utiliser des couleurs
+    subtiles pour différencier les rayons.
+  expected_output: >
+    Un fichier HTML complet avec une liste de courses organisée par rayons,
+    incluant des cases à cocher pour chaque article et une présentation
+    visuelle soignée.
+  agent: shopping_list_designer
+  output_file: "output/shopping_crew/liste_courses.html"
+
+
+create_markdown_shopping_list:
+  description: >
+    Créer une version Markdown de la liste de courses, également organisée par
+    rayons et incluant des cases à cocher. Cette version doit être compatible
+    avec la plupart des applications de prise de notes et facilement
+    partageable.
+  expected_output: >
+    Un fichier Markdown contenant la liste de courses complète, organisée par
+    rayons avec des cases à cocher pour chaque ingrédient.
+  agent: shopping_list_designer
+  output_file: "output/shopping_crew/liste_courses.md"

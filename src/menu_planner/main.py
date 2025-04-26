@@ -2,7 +2,6 @@
 from random import randint
 import json
 
-
 from crewai.flow import Flow, and_, listen, router, start
 
 from menu_planner.schemas import RecipeList, MenuJson, MenuState
@@ -10,6 +9,8 @@ from menu_planner.schemas import RecipeList, MenuJson, MenuState
 from menu_planner.crews.poem_crew.poem_crew import PoemCrew
 from menu_planner.crews.menu_designer_crew.menu_designer_crew import MenuDesignerCrew
 from menu_planner.crews.html_design_crew.html_design_crew import HtmlDesignCrew
+from menu_planner.crews.recipe_expert_crew.recipe_expert_crew import RecipeExpertCrew
+from menu_planner.crews.shopping_crew.shopping_crew import ShoppingCrew
 
 class PoemFlow(Flow[MenuState]):
 
@@ -65,6 +66,34 @@ class PoemFlow(Flow[MenuState]):
             "poem": self.state.poem,
             }   
         HtmlDesignCrew().crew().kickoff(inputs=inputs)
+
+    @listen(insert_poem)
+    def prepare_recipes(self):
+        recipe_list = self.state.recipe_list
+        if recipe_list:
+            for recipe in recipe_list.recipes:
+                print(recipe)
+                # Do something with each recipe (call a Crew/task, etc.)
+                RecipeExpertCrew().crew().kickoff(
+                    inputs={
+                        "recipe": recipe,
+                        "recipe_id": recipe.lower().replace(" ", "_"),
+                    }
+                )
+        else:
+            print("No recipes found.")
+        
+    @listen(prepare_recipes)
+    def shopping_list(self):
+        ShoppingCrew().crew().kickoff(
+            inputs={
+                "recipe_list": self.state.recipe_list.model_dump() if self.state.recipe_list else None,
+                "adults": self.state.adults,
+                "children": self.state.children,
+                "children_age": self.state.children_age,
+                "poem": self.state.poem,
+            }
+        )
 
 def kickoff():
     poem_flow = PoemFlow()
