@@ -1,0 +1,27 @@
+recherche_menu:
+  description: |
+    Recherche et sélection de recettes équilibrées et variées
+    pour une famille de {adults} adultes et {children} garçons de {children_age} ans, couvrant
+    déjeuners et dîners du lundi au dimanche.
+  expected_output: |
+    Un JSON structuré contenant 14 recettes (
+    7 déjeuners et 7 dîners) avec titre, description sommaire et calories estimées.
+  agent: menu_researcher
+
+formattage_html:
+  description: |
+    Prendre les recettes recherchées dans {menu_json} et générer un menu hebdomadaire structuré
+    avec titres de jours et repas, en HTML propre et coloré.
+    Inclure des touches ludiques et indications de calories.
+  expected_output: |
+    Un fichier HTML complet présentant le menu de la semaine.
+  agent: html_designer
+
+liste_recettes:
+  description: |
+    Prendre le menu recherché et extraire la liste des titres des recettes sélectionnées
+  expected_output: |
+    Un JSON listant les noms des 14 recettes du menu. 
+    On le stocke dans {recipe_list} sans les ``` 
+  agent: menu_researcher
+  dependencies: [recherche_menu]
