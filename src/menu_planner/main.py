@@ -60,10 +60,18 @@ class PoemFlow(Flow[MenuState]):
             "adults": self.state.adults,
             "children": self.state.children,
             "children_age": self.state.children_age,
-            "menu_json": self.state.menu_json,
-            "recipe_list": self.state.recipe_list, 
+            "menu_json": self.state.menu_json.model_dump() if self.state.menu_json else None,
+            "recipe_list": self.state.recipe_list.model_dump() if self.state.recipe_list else None,
             "poem": self.state.poem,
-        }
+            }   
+        # inputs = {
+        #     "adults": self.state.adults,
+        #     "children": self.state.children,
+        #     "children_age": self.state.children_age,
+        #     "menu_json": self.state.menu_json,
+        #     "recipe_list": self.state.recipe_list, 
+        #     "poem": self.state.poem,
+        # }
         HtmlDesignCrew().crew().kickoff(inputs=inputs)
 
 def kickoff():

@@ -1,0 +1,15 @@
+html_menu_task:
+  description: >
+    À partir du contenu du menu hebdomadaire {menu_json} et du poème {poem},
+    génère un menu HTML professionnel, élégant et lisible. Le menu doit être
+    structuré par jour et par repas (petit-déjeuner, dîner), avec des titres,
+    des descriptions, des calories, et des emojis appropriés pour chaque plat.
+    Termine le menu par le poème, présenté comme une signature inspirante.
+    Tout doit être en français, avec des entités HTML correctes, des emojis,
+    et un rendu très professionnel.
+  expected_output: >
+    Un fichier menu.html contenant le menu hebdomadaire formaté en HTML, avec
+    une section signature pour le poème. Le HTML doit être propre, moderne,
+    coloré avec subtilité, et adapté à une impression ou une lecture sur
+    écran.
+  agent: reporting_analyst
