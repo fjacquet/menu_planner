@@ -126,7 +126,6 @@ class RecipeExpertCrew:
         return Crew(
             agents=self.agents,  # Automatically created by the @agent decorator
             tasks=self.tasks,  # Automatically created by the @task decorator
-            process=Process.hierarchical,
-            manager_llm="gpt-4.1-nano",
+            process=Process.sequential,
             verbose=True,
         )

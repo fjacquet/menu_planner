@@ -77,18 +77,19 @@ class MenuFlow(Flow[MenuState]):
         
     @listen(route_menu_or_recipe)
     def generate_single_recipe(self):
-        print(f"Génération de la recette: {self.state.recipe_name}")
-        # Générer la recette unique
-        inputs = {
-            "recipe_name": self.state.recipe_name,
-            "recipe_id": self.state.recipe_name.lower().replace(" ", "_"),
+        if MaRecette != "":
+            print(f"Génération de la recette: {self.state.recipe_name}")
+            # Générer la recette unique
+            inputs = {
+                "recipe_name": self.state.recipe_name,
+                "recipe_id": self.state.recipe_name.lower().replace(" ", "_"),
             "recipe_html_path": f"output/recipe_expert_crew/{self.state.recipe_name.lower().replace(" ", "_")}.html",
             "recipe_yaml_path": f"output/recipe_expert_crew/{self.state.recipe_name.lower().replace(" ", "_")}.yaml",
-            "recipe_ingredients_path": f"output/recipe_expert_crew/{self.state.recipe_name.lower().replace(" ", "_")}_ingredients.json",
-            "menu_json": self.state.menu_json,  
-        }
-        RecipeExpertCrew().crew().kickoff(inputs=inputs)
-        print(f"Recette générée: {self.state.recipe_name}")
+                "recipe_ingredients_path": f"output/recipe_expert_crew/{self.state.recipe_name.lower().replace(" ", "_")}_ingredients.json",
+                "menu_json": self.state.menu_json,  
+            }
+            RecipeExpertCrew().crew().kickoff(inputs=inputs)
+            print(f"Recette générée: {self.state.recipe_name}")
         
 
 
