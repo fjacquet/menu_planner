@@ -52,6 +52,9 @@ html_creation:
   expected_output: >
     Code HTML complet pour la recette, avec une mise en page attrayante,
     utilisant des éléments HTML5 et CSS pour une présentation professionnelle.
+    La page doit être en français et peut contenir des emojis.
+    Le titre ne doit contenir que le nom de la recette {recipe}
+    La page ne doit pas contenir de markdown ni de ```
   agent: specialized_writer
   output_file: "{recipe_html_path}"
 
@@ -59,6 +62,9 @@ paprika_creation:
   description: >
     Créer une version yaml importable par Paprika 3 de la recette {recipe}
     avec un format optimisé pour l'application de cuisine Paprika.
+    La page ne doit pas contenir de markdown ni de ```
+    Le nom ne doit contenir que le nom de la recette {recipe}.
+
     Paprika donne comme exemple de recette.
 
     name: My Tasty Recipe
