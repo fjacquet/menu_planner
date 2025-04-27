@@ -1,16 +1,22 @@
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
-from pydantic import BaseModel
-from typing import List
+from composio_crewai import ComposioToolSet, App, Action
+from menu_planner.schemas import RecipeIngredient, RecipeOutput
+from dotenv import load_dotenv
 
-class RecipeIngredient(BaseModel):
-    name: str
-    quantity: float
-    unit: str
+load_dotenv()
 
-class RecipeOutput(BaseModel):
-    recipe_html: str
-    ingredients: List[RecipeIngredient]
+# Initialize the toolset
+toolset = ComposioToolSet()
+
+search_tools = toolset.get_tools(
+    actions=[
+        "COMPOSIO_SEARCH_DUCK_DUCK_GO_SEARCH",
+        # 'COMPOSIO_SEARCH_SEARCH',
+    ],
+)
+
+
 
 @CrewBase
 class RecipeExpertCrew:
@@ -22,21 +28,24 @@ class RecipeExpertCrew:
     @agent
     def recipe_expert(self) -> Agent:
         return Agent(
-            config=self.agents_config['recipe_expert'],
+            config=self.agents_config["recipe_expert"], 
+            tools=search_tools,
             verbose=True
         )
 
     @agent
     def thermomix_adapter(self) -> Agent:
         return Agent(
-            config=self.agents_config['thermomix_adapter'],
-            verbose=True
+            config=self.agents_config["thermomix_adapter"],
+            tools=search_tools,
+            verbose=True,
         )
 
     @agent
     def nutritionist(self) -> Agent:
         return Agent(
-            config=self.agents_config['nutritionist'],
+            config=self.agents_config["nutritionist"],
+            tools=search_tools, 
             verbose=True
         )
 

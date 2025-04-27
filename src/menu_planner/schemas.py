@@ -29,6 +29,15 @@ class Poem(BaseModel):
     sentence_count: int = 1
     poem: str = ""
 
+class RecipeIngredient(BaseModel):
+    name: str
+    quantity: float
+    unit: str
+
+class RecipeOutput(BaseModel):
+    recipe_html: str
+    ingredients: list[RecipeIngredient]
+
 class MenuState(BaseModel):
     menu_json: Optional[MenuJson] = None
     menu_html: str = ""
