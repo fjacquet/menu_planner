@@ -22,7 +22,10 @@ class PoemFlow(Flow[MenuState]):
     @listen(generate_sentence_count)
     def generate_poem(self):
         print("Generating poem")
-        inputs = {"sentence_count": self.state.sentence_count}
+        inputs = {
+            "sentence_count": self.state.sentence_count,
+        "children_age": self.state.children_age,
+        }
         result = PoemCrew().crew().kickoff(inputs=inputs)
         print("Poem généré", result.raw)
         self.state.poem = result.raw
@@ -110,7 +113,7 @@ class PoemFlow(Flow[MenuState]):
         self.state.recipe_ingredients_files = recipe_ingredients_files
 
     @listen(prepare_recipes)
-    def shopping_list(self):
+    def prepare_shopping_list(self):
         ShoppingCrew().crew().kickoff(
             inputs={
                 "recipe_list": self.state.recipe_list.model_dump() if self.state.recipe_list else None,

@@ -29,5 +29,6 @@ class HtmlDesignCrew:
             agents=self.agents,
             tasks=self.tasks,
             process=Process.sequential,
+            manager_llm="gpt-4.1-nano",
             verbose=True,
         )

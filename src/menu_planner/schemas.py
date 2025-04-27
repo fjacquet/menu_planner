@@ -10,7 +10,7 @@ class Meal(BaseModel):
     calories: int
 
 class DayMenu(BaseModel):
-    breakfast: Meal
+    lunch: Meal
     dinner: Meal
 
 class WeeklyMenu(BaseModel):

@@ -24,6 +24,13 @@ class PoemCrew:
             config=self.agents_config["poem_writer"],
         )
 
+    @agent
+    def nutrition_writer(self) -> Agent:
+        """Nutrition fun fact agent"""
+        return Agent(
+            config=self.agents_config["nutrition_writer"],
+        )
+
     # To learn more about structured task outputs,
     # task dependencies, and task callbacks, check out the documentation:
     # https://docs.crewai.com/concepts/tasks#overview-of-a-task
@@ -32,6 +39,14 @@ class PoemCrew:
         return Task(
             config=self.tasks_config["write_poem"],
             output_file="output/poem_crew/poem.txt",
+        )
+
+    @task
+    def write_nutrition(self) -> Task:
+        """Generate nutrition fun facts or short poems for kids"""
+        return Task(
+            config=self.tasks_config["write_nutrition"],
+            output_file="output/poem_crew/nutrition.txt",
         )
 
     @crew
@@ -43,6 +58,7 @@ class PoemCrew:
         return Crew(
             agents=self.agents,  # Automatically created by the @agent decorator
             tasks=self.tasks,  # Automatically created by the @task decorator
-            process=Process.sequential,
+            process=Process.hierarchical,
+            manager_llm="gpt-4.1-nano",
             verbose=True,
         )

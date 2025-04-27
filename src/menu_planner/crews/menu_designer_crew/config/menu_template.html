@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Menu Hebdomadaire</title>
+  <style>
+    body {
+      background-color: #f5f7fa;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #ff7f50;
+      margin-top: 20px;
+    }
+    table {
+      width: 90%;
+      margin: 20px auto;
+      border-collapse: collapse;
+      background-color: #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 12px 15px;
+      text-align: left;
+    }
+    th {
+      background-color: #ffdab9;
+      color: #333;
+    }
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    tr:hover {
+      background-color: #e6f7ff;
+    }
+  </style>
+</head>
+<body>
+  <h1>Menu de la Semaine</h1>
+  <table>
+    <tr><th>Jour</th><th>Déjeuner</th><th>Dîner</th></tr>
+    {% for day, m in weekly_menu.items() %}
+    <tr>
+      <td>{{ day.capitalize() }}</td>
+      <td><strong>{{ m.lunch.title }}</strong><br>{{ m.lunch.description }}<br><em>{{ m.lunch.calories }} kcal</em></td>
+      <td><strong>{{ m.dinner.title }}</strong><br>{{ m.dinner.description }}<br><em>{{ m.dinner.calories }} kcal</em></td>
+    </tr>
+    {% endfor %}
+  </table>
+</body>
+</html>

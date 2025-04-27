@@ -121,8 +121,9 @@ class RecipeExpertCrew:
     def crew(self) -> Crew:
         """Crée le RecipeExpertCrew pour traiter les recettes"""
         return Crew(
-            agents=self.agents, # Automatically created by the @agent decorator
-            tasks=self.tasks, # Automatically created by the @task decorator
+            agents=self.agents,  # Automatically created by the @agent decorator
+            tasks=self.tasks,  # Automatically created by the @task decorator
             process=Process.sequential,
-            verbose=True
+            manager_llm="gpt-4.1-nano",
+            verbose=True,
         )
