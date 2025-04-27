@@ -1,7 +1,7 @@
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from pydantic import BaseModel
-from typing import Optional, List, Dict, Any
+from typing import List
 
 class RecipeIngredient(BaseModel):
     name: str
@@ -66,7 +66,7 @@ class RecipeExpertCrew:
         return Task(
             config=self.tasks_config['thermomix_adaptation'],
             dependencies=[self.recipe_creation],
-            verbose=True
+            verbose=True,
         )
 
     @task
@@ -74,7 +74,7 @@ class RecipeExpertCrew:
         return Task(
             config=self.tasks_config['nutrition_evaluation'],
             dependencies=[self.thermomix_adaptation],
-            verbose=True
+            verbose=True,
         )
 
     @task
@@ -82,7 +82,7 @@ class RecipeExpertCrew:
         return Task(
             config=self.tasks_config['recipe_integration'],
             dependencies=[self.nutrition_evaluation],
-            verbose=True
+            verbose=True,
         )
 
     # @task
@@ -97,6 +97,14 @@ class RecipeExpertCrew:
     def html_creation(self) -> Task:
         return Task(
             config=self.tasks_config["html_creation"],
+            dependencies=[self.recipe_integration],
+            verbose=True,
+        )
+
+    @task
+    def paprika_creation(self) -> Task:
+        return Task(
+            config=self.tasks_config["paprika_creation"],
             dependencies=[self.recipe_integration],
             verbose=True,
         )

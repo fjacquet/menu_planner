@@ -2,10 +2,12 @@ recherche_menu:
   description: |
     Recherche et sélection de recettes équilibrées et variées
     pour une famille de {adults} adultes et {children} garçons de {children_age} ans, couvrant
-    déjeuners et dîners du lundi au dimanche.
+    déjeuners (midi) et dîners (soir) du lundi au dimanche.
   expected_output: |
-    Un JSON structuré contenant 14 recettes (
-    7 déjeuners et 7 dîners) avec titre, description sommaire et calories estimées.
+    Un JSON structuré contenant 14 recettes ( 7 déjeuners (midi) et 7 dîners (soir)) avec 
+    - titre,
+    - description sommaire 
+    - calories estimées.
   agent: menu_researcher
 
 formattage_html:

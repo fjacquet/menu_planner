@@ -38,3 +38,9 @@ class MenuState(BaseModel):
     recipe_list: Optional[RecipeList] = None
     sentence_count: int = 1
     poem: str = ""
+    
+    # Recipe tracking lists
+    recipe_ids: list[str] = []
+    recipe_htmls: list[str] = []
+    recipe_yamls: list[str] = []
+    recipe_ingredients_files: list[str] = []

@@ -70,19 +70,45 @@ class PoemFlow(Flow[MenuState]):
     @listen(insert_poem)
     def prepare_recipes(self):
         recipe_list = self.state.recipe_list
+        
+        # Lists to track generated files
+        recipe_ids = []
+        recipe_htmls = []
+        recipe_yamls = []
+        recipe_ingredients_files = []
+        
         if recipe_list:
             for recipe in recipe_list.recipes:
                 print(recipe)
-                # Do something with each recipe (call a Crew/task, etc.)
+                recipe_id = recipe.lower().replace(" ", "_")
+                recipe_html = f"output/recipe_expert_crew/{recipe_id}.html"
+                recipe_yaml = f"output/recipe_expert_crew/{recipe_id}.yaml"
+                recipe_ingredients = f"output/recipe_expert_crew/{recipe_id}_ingredients.json"
+                
+                # Process each recipe
                 RecipeExpertCrew().crew().kickoff(
                     inputs={
                         "recipe": recipe,
-                        "recipe_id": recipe.lower().replace(" ", "_"),
+                        "recipe_id": recipe_id,
+                        "recipe_html_path": recipe_html,
+                        "recipe_yaml_path": recipe_yaml,
+                        "recipe_ingredients_path": recipe_ingredients,
                     }
                 )
+                # Add to tracking lists
+                recipe_ids.append(recipe_id)
+                recipe_htmls.append(recipe_html)
+                recipe_yamls.append(recipe_yaml)
+                recipe_ingredients_files.append(recipe_ingredients)
         else:
             print("No recipes found.")
         
+        # Save tracked lists to state for use in shopping_list
+        self.state.recipe_ids = recipe_ids
+        self.state.recipe_htmls = recipe_htmls
+        self.state.recipe_yamls = recipe_yamls
+        self.state.recipe_ingredients_files = recipe_ingredients_files
+
     @listen(prepare_recipes)
     def shopping_list(self):
         ShoppingCrew().crew().kickoff(
@@ -92,6 +118,10 @@ class PoemFlow(Flow[MenuState]):
                 "children": self.state.children,
                 "children_age": self.state.children_age,
                 "poem": self.state.poem,
+                "recipe_ids": self.state.recipe_ids,
+                "recipe_htmls": self.state.recipe_htmls,
+                "recipe_yamls": self.state.recipe_yamls,
+                "recipe_ingredients_files": self.state.recipe_ingredients_files
             }
         )
 
