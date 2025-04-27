@@ -40,21 +40,22 @@ class RecipeOutput(BaseModel):
     ingredients: list[RecipeIngredient]
 
 class MenuState(BaseModel):
-    menu_json: Optional[MenuJson] = None
-    menu_html: str = ""
+    # Paramters
     adults: int = int(os.getenv("ADULTS", "2"))
-    children: int = int(os.getenv("CHILDREN", "1"))
     children_age: int = int(os.getenv("CHILDREN_AGE", "10"))
-    send_to: str = os.getenv("MAILTO", "a@a.aa")
-    recipe_list: Optional[RecipeList] = None
-    sentence_count: int = 1
+    children: int = int(os.getenv("CHILDREN", "1"))
+    menu_html: str = ""
+    menu_json: Optional[MenuJson] = None
     poem: str = ""
-    
     # Recipe tracking lists
-    recipe_ids: list[str] = []
     recipe_htmls: list[str] = []
-    recipe_yamls: list[str] = []
+    recipe_ids: list[str] = []
     recipe_ingredients_files: list[str] = []
+    recipe_list: Optional[RecipeList] = None
+    recipe_name: Optional[str] = None
+    recipe_yamls: list[str] = []
+    send_to: str = os.getenv("MAILTO", "a@a.aa")
+    sentence_count: int = 1
 
 class PaprikaRecipe(BaseModel):
     name: str

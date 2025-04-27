@@ -12,7 +12,19 @@ from menu_planner.crews.html_design_crew.html_design_crew import HtmlDesignCrew
 from menu_planner.crews.recipe_expert_crew.recipe_expert_crew import RecipeExpertCrew
 from menu_planner.crews.shopping_crew.shopping_crew import ShoppingCrew
 
-class PoemFlow(Flow[MenuState]):
+
+"""
+"""
+"""
+"""
+MaRecette = "Une tartiflette authentique"  # Mettre une valeur ici pour générer une seule recette, ou laisser vide pour un menu complet
+"""
+"""
+"""
+"""
+
+
+class MenuFlow(Flow[MenuState]):
 
     @start()
     def generate_sentence_count(self):
@@ -24,15 +36,20 @@ class PoemFlow(Flow[MenuState]):
         print("Generating poem")
         inputs = {
             "sentence_count": self.state.sentence_count,
-        "children_age": self.state.children_age,
+            "children_age": self.state.children_age,
         }
         result = PoemCrew().crew().kickoff(inputs=inputs)
         print("Poem généré", result.raw)
         self.state.poem = result.raw
 
-
     @start()
     def generate_menu(self):
+        # Si MaRecette est définie, on saute la génération du menu complet
+        if MaRecette:
+            print(f"Génération d'une recette unique: {MaRecette}")
+            self.state.recipe_name = MaRecette
+            return
+            
         print("Démarrage de la génération du menu hebdomadaire")
         inputs = {
             "adults": self.state.adults,
@@ -42,7 +59,6 @@ class PoemFlow(Flow[MenuState]):
             "menu_html": self.state.menu_html,
             "recipe_list": self.state.recipe_list,
             "send_to": self.state.send_to,
-
         }
         MenuDesignerCrew().crew().kickoff(inputs=inputs)
 
@@ -52,7 +68,35 @@ class PoemFlow(Flow[MenuState]):
         with open("output/menu_designer_crew/menu.json", "r") as f:
             self.state.menu_json = MenuJson(**json.load(f))
 
-    @router(and_("generate_menu", "generate_poem"))
+    @router(generate_menu)
+    def route_menu_or_recipe(self):
+        if MaRecette:
+            return self.generate_single_recipe
+        else:
+            return self.check_state
+        
+    @listen(route_menu_or_recipe)
+    def generate_single_recipe(self):
+        print(f"Génération de la recette: {self.state.recipe_name}")
+        # Générer la recette unique
+        inputs = {
+            "recipe_name": self.state.recipe_name,
+        }
+        RecipeExpertCrew().crew().kickoff(inputs=inputs)
+        print(f"Recette générée: {self.state.recipe_name}")
+        
+        # On peut ensuite générer la version HTML de cette recette unique
+        self.generate_recipe_html()
+
+    def generate_recipe_html(self):
+        print("Génération du HTML pour la recette unique")
+        inputs = {
+            "recipe_name": self.state.recipe_name,
+        }
+        HtmlDesignCrew().crew().kickoff(inputs=inputs)
+        print(f"HTML généré pour la recette: {self.state.recipe_name}")
+
+    @router(and_("generate_menu", "generate_single_recipe", "generate_poem"))
     def check_state(self):  
 
         recipes = self.state.recipe_list
@@ -94,7 +138,7 @@ class PoemFlow(Flow[MenuState]):
                 # Process each recipe
                 RecipeExpertCrew().crew().kickoff(
                     inputs={
-                        "recipe": recipe,
+                        "recipe": self.state.recipe_name,
                         "recipe_id": recipe_id,
                         "recipe_html_path": recipe_html,
                         "recipe_yaml_path": recipe_yaml,
@@ -132,13 +176,13 @@ class PoemFlow(Flow[MenuState]):
         )
 
 def kickoff():
-    poem_flow = PoemFlow()
-    poem_flow.kickoff()
+    menu_flow = MenuFlow()
+    menu_flow.kickoff()
 
 
 def plot():
-    poem_flow = PoemFlow()
-    poem_flow.plot()
+    menu_flow = MenuFlow()
+    menu_flow.plot()
 
 
 if __name__ == "__main__":
