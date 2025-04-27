@@ -1,6 +1,8 @@
-.env
 __pycache__/
-lib/
+.composio.lock
 .DS_Store
-uv.lock
+.env
+existant/
+lib/
 output/
+uv.lock
