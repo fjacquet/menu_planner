@@ -1,56 +1,97 @@
-# {{crew_name}} Crew
+# Menu Planner with CrewAI
 
-Welcome to the {{crew_name}} Crew project, powered by [crewAI](https://crewai.com). This template is designed to help you set up a multi-agent AI system with ease, leveraging the powerful and flexible framework provided by crewAI. Our goal is to enable your agents to collaborate effectively on complex tasks, maximizing their collective intelligence and capabilities.
+Menu Planner est un système de génération de menus hebdomadaires pour familles, propulsé par le framework CrewAI. Il orchestre plusieurs agents spécialisés pour :
+
+- Rechercher et sélectionner des recettes adaptées (2 adultes, enfants)
+- Analyser la valeur nutritionnelle et estimer les calories
+- Adapter les recettes pour Thermomix
+- Concevoir un menu hebdomadaire en HTML propre et responsive
+- Générer une liste de courses avec quantités et cases à cocher
+- Produire un poème ou des faits ludiques sur la nutrition
+- Envoyer le menu final par e-mail via Gmail
+
+## Fonctionnalités
+
+- Architecture multi-agents grâce à [CrewAI](https://crewai.com)
+- Configuration simple via fichier `.env`
+- Sorties structurées : JSON, HTML, liste de recettes, shopping list, poème
+- Intégration d’APIs externes : Composio, SerpAPI, OpenAI/Gemini
+- Respect des principes KISS & DRY
+
+## Prérequis
+
+- Python 3.10 ≤ version < 3.13
+- [UV](https://docs.astral.sh/uv/) pour la gestion des dépendances
+- Clés API (Composio, SerpAPI, Gemini/OpenAI, Gmail)
 
 ## Installation
 
-Ensure you have Python >=3.10 <3.13 installed on your system. This project uses [UV](https://docs.astral.sh/uv/) for dependency management and package handling, offering a seamless setup and execution experience.
-
-First, if you haven't already, install uv:
-
 ```bash
 pip install uv
+uv install
 ```
 
-Next, navigate to your project directory and install the dependencies:
-
-(Optional) Lock the dependencies and install them by using the CLI command:
-```bash
-crewai install
-```
-
-### Customizing
-
-**Add your `OPENAI_API_KEY` into the `.env` file**
-
-- Modify `src/menu_planner/config/agents.yaml` to define your agents
-- Modify `src/menu_planner/config/tasks.yaml` to define your tasks
-- Modify `src/menu_planner/crew.py` to add your own logic, tools and specific args
-- Modify `src/menu_planner/main.py` to add custom inputs for your agents and tasks
-
-## Running the Project
-
-To kickstart your flow and begin execution, run this from the root folder of your project:
+### Configuration
 
 ```bash
-crewai run
+cp .env.sample .env
+# Éditez .env avec vos clés et préférences
 ```
 
-This command initializes the menu_planner Flow as defined in your configuration.
+## Lancer le flux
 
-This example, unmodified, will run the create a `report.md` file with the output of a research on LLMs in the root folder.
+```bash
+crewai flow kickoff
+```
 
-## Understanding Your Crew
+Les fichiers générés se trouvent dans `output/menu_designer_crew` :
 
-The menu_planner Crew is composed of multiple AI agents, each with unique roles, goals, and tools. These agents collaborate on a series of tasks, defined in `config/tasks.yaml`, leveraging their collective skills to achieve complex objectives. The `config/agents.yaml` file outlines the capabilities and configurations of each agent in your crew.
+- `menu.json` : données du menu structuré
+- `menu.html` : page HTML stylée
+- `liste_recettes.json` : titres des recettes
+- `shopping_list.json` : liste de courses
+- Poème/faits nutritionnels
 
-## Support
+## Variables d’environnement
 
-For support, questions, or feedback regarding the {{crew_name}} Crew or crewAI.
+| Clé                      | Description                                   |
+|--------------------------|-----------------------------------------------|
+| `ADULTS`                 | Nombre d’adultes                              |
+| `CHILDREN`               | Nombre d’enfants                              |
+| `CHILDREN_AGE`           | Âge des enfants                               |
+| `MAILTO`                 | Destinataire du menu (e-mail)                 |
+| `COMPOSIO_API_KEY`       | Clé d’API Composio                            |
+| `COMPOSIO_SERPAPI_API_KEY`| Clé SerpAPI pour Composio                     |
+| `GEMINI_API_KEY`         | Clé API Gemini                                |
+| `OPENAI_API_KEY`         | Clé API OpenAI                                |
+| `MODEL`                  | Modèle LLM (ex : `gemini/gemini-2.0-flash`)    |
+| `OPENAI_TIMEOUT`         | Timeout OpenAI (secondes)                     |
+| `LITELLM_TIMEOUT`        | Timeout LitelLM (secondes)                    |
 
-- Visit our [documentation](https://docs.crewai.com)
-- Reach out to us through our [GitHub repository](https://github.com/joaomdmoura/crewai)
-- [Join our Discord](https://discord.com/invite/X4JWnZnxPb)
-- [Chat with our docs](https://chatg.pt/DWjSBZn)
+## Structure du projet
 
-Let's create wonders together with the power and simplicity of crewAI.
+```
+menu_planner/
+├── src/menu_planner/
+│   ├── main.py         # Point d’entrée du flow
+│   ├── schemas.py      # Modèles Pydantic et état global
+│   └── crews/
+│       ├── poem_crew/
+│       ├── recipe_expert_crew/
+│       ├── menu_designer_crew/
+│       ├── shopping_crew/
+│       └── html_design_crew/
+├── config/
+│   ├── agents.yaml     # Configuration des agents
+│   └── tasks.yaml      # Configuration des tâches
+├── .env.sample         # Modèle de variables d’environnement
+└── output/             # Résultats générés
+```
+
+## Contribuer
+
+Les contributions sont les bienvenues : ouvrez une issue ou proposez une PR.
+
+## Licence
+
+MIT 

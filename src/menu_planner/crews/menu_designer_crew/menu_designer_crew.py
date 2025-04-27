@@ -3,7 +3,7 @@ from crewai.project import CrewBase, agent, crew, task
 from menu_planner.schemas import RecipeList, MenuJson
 
 
-from composio_crewai import ComposioToolSet, App, Action
+from composio_crewai import ComposioToolSet, App
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -14,14 +14,16 @@ toolset = ComposioToolSet()
 search_tools = toolset.get_tools(
     actions=[
         "COMPOSIO_SEARCH_DUCK_DUCK_GO_SEARCH",
+        "COMPOSIO_SEARCH_SHOPPING_SEARCH",
         "COMPOSIO_SEARCH_SEARCH",
     ],
 )
-
+gmail = toolset.get_tools(apps=[App.GMAIL])
 
 # If you want to run a snippet of code before or after the crew starts,
 # you can use the @before_kickoff and @after_kickoff decorators
 # https://docs.crewai.com/concepts/crews#example-crew-class-with-decorators
+
 
 @CrewBase
 class MenuDesignerCrew:
@@ -43,6 +45,14 @@ class MenuDesignerCrew:
     def html_designer(self) -> Agent:
         return Agent(config=self.agents_config["html_designer"], verbose=True)
 
+    @agent
+    def gmail_sender(self) -> Agent:
+        return Agent(
+            config=self.agents_config["gmail_sender"],
+            tools=gmail,
+            verbose=True,
+        )
+
     # To learn more about structured task outputs,
     # task dependencies, and task callbacks, check out the documentation:
     # https://docs.crewai.com/concepts/tasks#overview-of-a-task
@@ -55,7 +65,6 @@ class MenuDesignerCrew:
             tools=search_tools,
             verbose=True,
         )
-
 
     @task
     def formattage_html_task(self) -> Task:
@@ -74,7 +83,15 @@ class MenuDesignerCrew:
             output_json=RecipeList,
             dependencies=[self.recherche_menu_task],
             verbose=True,
-            )
+        )
+
+    @task
+    def send_email_task(self) -> Task:
+        return Task(
+            config=self.tasks_config["send_email"],
+            tools=gmail,
+            verbose=True,
+        )
 
     @crew
     def crew(self) -> Crew:

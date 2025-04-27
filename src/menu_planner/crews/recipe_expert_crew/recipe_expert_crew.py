@@ -115,6 +115,7 @@ class RecipeExpertCrew:
         return Task(
             config=self.tasks_config["paprika_creation"],
             dependencies=[self.recipe_integration],
+            output_json=PaprikaRecipe
             verbose=True,
         )
 
