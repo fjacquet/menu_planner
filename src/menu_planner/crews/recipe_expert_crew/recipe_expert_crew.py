@@ -1,7 +1,7 @@
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from composio_crewai import ComposioToolSet, App, Action
-from menu_planner.schemas import RecipeIngredient, RecipeOutput
+from menu_planner.schemas import RecipeIngredient, RecipeOutput, PaprikaRecipe
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -12,7 +12,7 @@ toolset = ComposioToolSet()
 search_tools = toolset.get_tools(
     actions=[
         "COMPOSIO_SEARCH_DUCK_DUCK_GO_SEARCH",
-        # 'COMPOSIO_SEARCH_SEARCH',
+        'COMPOSIO_SEARCH_SEARCH',
     ],
 )
 
@@ -115,7 +115,7 @@ class RecipeExpertCrew:
         return Task(
             config=self.tasks_config["paprika_creation"],
             dependencies=[self.recipe_integration],
-            output_json=PaprikaRecipe
+            output_json=PaprikaRecipe,
             verbose=True,
         )
 
