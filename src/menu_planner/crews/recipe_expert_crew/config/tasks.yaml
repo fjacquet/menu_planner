@@ -1,6 +1,6 @@
 recipe_creation:
   description: >
-    À partir du titre de recette "{recipe}", élaborer une recette
+    À partir du titre de recette "{recipe_name}", élaborer une recette
     détaillée avec ingrédients, proportions et instructions précises pour une
     famille de 2 adultes et un enfant de 10 ans. La recette doit être
     délicieuse, accessible et présenter une touche créative qui rendra le plat
@@ -14,7 +14,7 @@ recipe_creation:
 thermomix_adaptation:
   description: >
     Adapter la recette pour utilisation avec un Thermomix. La recette est
-    basée sur ce plat : {recipe}
+    basée sur ce plat : {recipe_name}   
     Fournir des instructions claires pour chaque étape, en indiquant les
     paramètres précis (vitesse, température, durée) pour le Thermomix.
   expected_output: >
@@ -24,7 +24,7 @@ thermomix_adaptation:
 
 nutrition_evaluation:
   description: >
-    Évaluer le profil nutritionnel de la recette pour : {recipe} 
+    Évaluer le profil nutritionnel de la recette pour : {recipe_name} 
     Identifier les points forts et les améliorations possibles du point de vue nutritionnel,
     particulièrement en considérant qu'elle sera servie à un enfant de 10 ans.
   expected_output: >
@@ -36,7 +36,7 @@ nutrition_evaluation:
 recipe_integration:
   description: >
     Intégrer des suggestions nutritionnelles à la recette Thermomix pour 
-    {recipe}, tout en préservant la saveur et la facilité de préparation.
+    {recipe_name}, tout en préservant la saveur et la facilité de préparation.
     Proposer des améliorations nutritionnelles adaptées aux enfants.
   expected_output: >
     Version améliorée de la recette Thermomix intégrant les suggestions
@@ -46,24 +46,24 @@ recipe_integration:
 html_creation:
   description: >
     Créer une version HTML élégante et bien structurée de la recette finale
-    pour {recipe}. La présentation doit être professionnelle, facile à lire,
+    pour {recipe_name}. La présentation doit être professionnelle, facile à lire,
     avec des sections claires pour les ingrédients, les étapes, les valeurs
     nutritionnelles et les conseils spéciaux.
   expected_output: >
     Code HTML complet pour la recette, avec une mise en page attrayante,
     utilisant des éléments HTML5 et CSS pour une présentation professionnelle.
     La page doit être en français et peut contenir des emojis.
-    Le titre ne doit contenir que le nom de la recette {recipe}
+    Le titre ne doit contenir que le nom de la recette {recipe_name}
     La page ne doit pas contenir de markdown ni de ```
   agent: specialized_writer
   output_file: "{recipe_html_path}"
 
 paprika_creation:
   description: >
-    Créer une version yaml importable par Paprika 3 de la recette {recipe}
+    Créer une version yaml importable par Paprika 3 de la recette {recipe_name}
     avec un format optimisé pour l'application de cuisine Paprika.
     La page ne doit pas contenir de markdown ni de ```
-    Le nom ne doit contenir que le nom de la recette {recipe}.
+    Le nom ne doit contenir que le nom de la recette {recipe_name}.
 
     Paprika donne comme exemple de recette.
 
@@ -101,7 +101,7 @@ paprika_creation:
 
 ingredient_list:
   description: >
-    À partir de la recette finale pour {recipe}, générer une liste JSON
+    À partir de la recette finale pour {recipe_name}  , générer une liste JSON
     structurée de tous les ingrédients nécessaires avec leurs quantités.
     Chaque ingrédient doit inclure nom, quantité et unité de mesure.
   expected_output: >

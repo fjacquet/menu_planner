@@ -17,7 +17,7 @@ from menu_planner.crews.shopping_crew.shopping_crew import ShoppingCrew
 """
 """
 """
-MaRecette = "Une tartiflette authentique"  # Mettre une valeur ici pour générer une seule recette, ou laisser vide pour un menu complet
+MaRecette = ""  # Mettre une valeur ici pour générer une seule recette, ou laisser vide pour un menu complet
 """
 """
 """
@@ -81,22 +81,18 @@ class MenuFlow(Flow[MenuState]):
         # Générer la recette unique
         inputs = {
             "recipe_name": self.state.recipe_name,
+            "recipe_id": self.state.recipe_name.lower().replace(" ", "_"),
+            "recipe_html_path": f"output/recipe_expert_crew/{self.state.recipe_name.lower().replace(" ", "_")}.html",
+            "recipe_yaml_path": f"output/recipe_expert_crew/{self.state.recipe_name.lower().replace(" ", "_")}.yaml",
+            "recipe_ingredients_path": f"output/recipe_expert_crew/{self.state.recipe_name.lower().replace(" ", "_")}_ingredients.json",
+            "menu_json": self.state.menu_json,  
         }
         RecipeExpertCrew().crew().kickoff(inputs=inputs)
         print(f"Recette générée: {self.state.recipe_name}")
         
-        # On peut ensuite générer la version HTML de cette recette unique
-        self.generate_recipe_html()
 
-    def generate_recipe_html(self):
-        print("Génération du HTML pour la recette unique")
-        inputs = {
-            "recipe_name": self.state.recipe_name,
-        }
-        HtmlDesignCrew().crew().kickoff(inputs=inputs)
-        print(f"HTML généré pour la recette: {self.state.recipe_name}")
 
-    @router(and_("generate_menu", "generate_single_recipe", "generate_poem"))
+    @router(and_("generate_menu", "generate_poem"))
     def check_state(self):  
 
         recipes = self.state.recipe_list
@@ -128,9 +124,8 @@ class MenuFlow(Flow[MenuState]):
         recipe_ingredients_files = []
         
         if recipe_list:
-            for recipe in recipe_list.recipes:
-                print(recipe)
-                recipe_id = recipe.lower().replace(" ", "_")
+            for recipe_name in recipe_list.recipes:
+                recipe_id = recipe_name.lower().replace(" ", "_")
                 recipe_html = f"output/recipe_expert_crew/{recipe_id}.html"
                 recipe_yaml = f"output/recipe_expert_crew/{recipe_id}.yaml"
                 recipe_ingredients = f"output/recipe_expert_crew/{recipe_id}_ingredients.json"
@@ -138,7 +133,7 @@ class MenuFlow(Flow[MenuState]):
                 # Process each recipe
                 RecipeExpertCrew().crew().kickoff(
                     inputs={
-                        "recipe": self.state.recipe_name,
+                        "recipe_name": recipe_name,
                         "recipe_id": recipe_id,
                         "recipe_html_path": recipe_html,
                         "recipe_yaml_path": recipe_yaml,

@@ -7,9 +7,11 @@ gmail_sender:
 
 menu_researcher:
   role: "Chef Cuisinier Familial"
-  goal:
-    "Créer un menu hebdomadaire équilibré pour une famille de 2 adultes et un
-    garçon de 10 ans"
+  goal: >
+    Créer un menu hebdomadaire équilibré pour la famille spécifiée par les
+    paramètres d'entrée `adults`, `children` et `children_age`. Varier
+    systématiquement les plats d'une semaine à l'autre et entre chaque exécution
+    pour maximiser la diversité, en évitant les répétitions.
   backstory: |
     Vous êtes un expert en nutrition et planification de menus familiaux équilibrés,
     avec une touche ludique adaptée aux enfants, capable de varier les plats chaque 

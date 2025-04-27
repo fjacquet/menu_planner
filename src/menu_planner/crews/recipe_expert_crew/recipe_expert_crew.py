@@ -38,6 +38,7 @@ class RecipeExpertCrew:
         return Agent(
             config=self.agents_config["thermomix_adapter"],
             tools=search_tools,
+            
             verbose=True,
         )
 
@@ -94,14 +95,6 @@ class RecipeExpertCrew:
             verbose=True,
         )
 
-    # @task
-    # def recipe_validation(self) -> Task:
-    #     return Task(
-    #         config=self.tasks_config['recipe_validation'],
-    #         dependencies=[self.recipe_integration],
-    #         verbose=True
-    #     )
-
     @task
     def html_creation(self) -> Task:
         return Task(
@@ -133,7 +126,7 @@ class RecipeExpertCrew:
         return Crew(
             agents=self.agents,  # Automatically created by the @agent decorator
             tasks=self.tasks,  # Automatically created by the @task decorator
-            process=Process.sequential,
+            process=Process.hierarchical,
             manager_llm="gpt-4.1-nano",
             verbose=True,
         )
