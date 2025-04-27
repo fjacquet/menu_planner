@@ -1,10 +1,9 @@
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from menu_planner.schemas import RecipeList, MenuJson
-
-
 from composio_crewai import ComposioToolSet, App
 from dotenv import load_dotenv
+from pathlib import Path
 
 load_dotenv()
 
@@ -29,21 +28,26 @@ gmail = toolset.get_tools(apps=[App.GMAIL])
 class MenuDesignerCrew:
     """MenuDesignerCrew crew"""
 
-    # Learn more about YAML configuration files here:
-    # Agents: https://docs.crewai.com/concepts/agents#yaml-configuration-recommended
-    # Tasks: https://docs.crewai.com/concepts/tasks#yaml-configuration-recommended
-    agents_config = "config/agents.yaml"
-    tasks_config = "config/tasks.yaml"
+    # Config file paths relative to this crew module
+    agents_config = str(Path(__file__).parent / "config" / "agents.yaml")
+    tasks_config = str(Path(__file__).parent / "config" / "tasks.yaml")
 
     # If you would like to add tools to your agents, you can learn more about it here:
     # https://docs.crewai.com/concepts/agents#agent-tools
     @agent
     def menu_researcher(self) -> Agent:
-        return Agent(config=self.agents_config["menu_researcher"], verbose=True)
+        return Agent(
+            config=self.agents_config["menu_researcher"],
+            tools=search_tools,
+            verbose=True,
+        )
 
     @agent
     def html_designer(self) -> Agent:
-        return Agent(config=self.agents_config["html_designer"], verbose=True)
+        return Agent(
+            config=self.agents_config["html_designer"],
+            verbose=True,
+        )
 
     @agent
     def gmail_sender(self) -> Agent:

@@ -1,3 +1,10 @@
+gmail_sender:
+  role: "Agent d'envoi d'email"
+  goal: "Envoyer le menu hebdomadaire par email au destinataire spécifié"
+  backstory: |
+    Vous êtes un agent IA spécialisé pour envoyer des emails via Gmail.
+    Vous utilisez l'outil Gmail configuré avec les credentials de l'environnement.
+
 menu_researcher:
   role: "Chef Cuisinier Familial"
   goal:

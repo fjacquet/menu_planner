@@ -39,7 +39,10 @@ class PoemFlow(Flow[MenuState]):
             "children": self.state.children,
             "children_age": self.state.children_age,
             "menu_json": self.state.menu_json,
+            "menu_html": self.state.menu_html,
             "recipe_list": self.state.recipe_list,
+            "send_to": self.state.send_to,
+
         }
         MenuDesignerCrew().crew().kickoff(inputs=inputs)
 

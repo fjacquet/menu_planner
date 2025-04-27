@@ -45,6 +45,7 @@ class MenuState(BaseModel):
     adults: int = int(os.getenv("ADULTS", "2"))
     children: int = int(os.getenv("CHILDREN", "1"))
     children_age: int = int(os.getenv("CHILDREN_AGE", "10"))
+    send_to: str = os.getenv("MAILTO", "a@a.aa")
     recipe_list: Optional[RecipeList] = None
     sentence_count: int = 1
     poem: str = ""
