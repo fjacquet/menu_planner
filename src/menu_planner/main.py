@@ -11,6 +11,7 @@ from menu_planner.crews.menu_designer_crew.menu_designer_crew import MenuDesigne
 from menu_planner.crews.html_design_crew.html_design_crew import HtmlDesignCrew
 from menu_planner.crews.recipe_expert_crew.recipe_expert_crew import RecipeExpertCrew
 from menu_planner.crews.shopping_crew.shopping_crew import ShoppingCrew
+from litellm.exceptions import Timeout as LlmTimeout
 
 
 """
@@ -132,15 +133,19 @@ class MenuFlow(Flow[MenuState]):
                 recipe_ingredients = f"output/recipe_expert_crew/{recipe_id}_ingredients.json"
                 
                 # Process each recipe
-                RecipeExpertCrew().crew().kickoff(
-                    inputs={
-                        "recipe_name": recipe_name,
-                        "recipe_id": recipe_id,
-                        "recipe_html_path": recipe_html,
-                        "recipe_yaml_path": recipe_yaml,
-                        "recipe_ingredients_path": recipe_ingredients,
-                    }
-                )
+                try:
+                    RecipeExpertCrew().crew().kickoff(
+                        inputs={
+                            "recipe_name": recipe_name,
+                            "recipe_id": recipe_id,
+                            "recipe_html_path": recipe_html,
+                            "recipe_yaml_path": recipe_yaml,
+                            "recipe_ingredients_path": recipe_ingredients,
+                        }
+                    )
+                except LlmTimeout as e:
+                    print(f"Timeout generating recipe {recipe_name}: {e}")
+                    continue
                 # Add to tracking lists
                 recipe_ids.append(recipe_id)
                 recipe_htmls.append(recipe_html)

@@ -128,4 +128,10 @@ class RecipeExpertCrew:
             tasks=self.tasks,  # Automatically created by the @task decorator
             process=Process.sequential,
             verbose=True,
+            memory=False,
+            cache=False,
+            allow_delegation=False,
+            respect_context_window=True,
+            timeout=300,
+            max_rpm=60,
         )

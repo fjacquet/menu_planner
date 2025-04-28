@@ -11,5 +11,5 @@ write_nutrition:
     Génère un fait amusant ou un court poème sur la nutrition adapté aux enfants de {children_age} ans.
     Utiliser un ton ludique et inclure une information nutritionnelle factuelle.
   expected_output: >
-    Un fait nutritif ou un poème de quelques lignes, compréhensible et amusant pour un enfant.
+    Un fait nutritif ou un poème de quelques lignes, compréhensible et amusant pour un enfant en francais.
   agent: nutrition_writer

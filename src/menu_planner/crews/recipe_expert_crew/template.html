@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ nom_recette }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            background: #f7fafb;
+            color: #222;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 700px;
+            margin: 40px auto;
+            background: #fff;
+            box-shadow: 0 4px 24px rgba(80,80,90,0.08);
+            border-radius: 12px;
+            padding: 30px 22px 36px 22px;
+        }
+        h1 {
+            text-align: center;
+            color: #4479a2;
+            font-size: 2.5rem;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+        .subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #8a8a8a;
+            margin-bottom: 24px;
+        }
+        .infos {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 18px;
+        }
+        .infos div {
+            margin-bottom: 8px;
+            font-size: 1.05rem;
+            background: #f1f5f9;
+            padding: 7px 15px;
+            border-radius: 18px;
+            color: #567;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+        section { margin-bottom: 30px; }
+        h2 {
+            font-size: 1.4rem;
+            color: #326687;
+            margin-bottom: 10px;
+            padding-bottom: 2px;
+            border-bottom: 1px solid #dde7ef;
+        }
+        ul, ol { margin: 0 0 10px 18px; padding: 0; }
+        ul li, ol li { margin-bottom: 6px; padding-left: 2px; }
+        .ingredients ul {
+            columns: 2;
+            column-gap: 20px;
+        }
+        .step {
+            background: #f7fafe;
+            border-left: 4px solid #4479a2;
+            border-radius: 7px;
+            padding: 12px 15px 10px 16px;
+            margin-bottom: 12px;
+            position: relative;
+        }
+        .step-number {
+            display: inline-block;
+            background: #4479a2;
+            color: #fff;
+            border-radius: 50%;
+            width: 26px;
+            height: 26px;
+            text-align: center;
+            line-height: 26px;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+        .nutrition-table {
+            border-collapse: collapse;
+            width: 100%;
+            background: #f8fafc;
+        }
+        .nutrition-table th, .nutrition-table td {
+            border: 1px solid #dbe1e6;
+            padding: 7px 8px;
+            text-align: left;
+        }
+        .nutrition-table th {
+            background: #e6f0f7;
+            font-weight: 600;
+            color: #254e6d;
+        }
+        .tips, .special {
+            background: #fdf6e4;
+            border-left: 5px solid #f0b019;
+            border-radius: 8px;
+            padding: 13px 18px;
+            margin-top: 16px;
+            margin-bottom: 0;
+        }
+        .tips strong, .special strong { color: #d38000; }
+        .tips { margin-bottom: 20px; }
+        .special {
+            border-left-color: #6abf43;
+            background: #effbe7;
+        }
+        @media screen and (max-width: 530px) {
+            .container {padding: 17px 0 10px 0;}
+            h1 {font-size: 1.5rem;}
+            .infos {flex-direction: column; gap: 5px;}
+            .ingredients ul {columns: 1;}
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>{{ nom_recette }}</h1>
+    <div class="subtitle">{{ sous_titre }}</div>
+    <div class="infos">
+        <div>🍽️ {{ portions }}</div>
+        <div>⏳ Préparation : {{ temps_preparation }}</div>
+        <div>🔥 Cuisson : {{ temps_cuisson }}</div>
+        <div>😋 Difficulté : {{ difficulte }}</div>
+    </div>
+
+    <section class="ingredients">
+        <h2>Ingrédients</h2>
+        <ul>
+            <!-- Liste des ingrédients ici -->
+            {{ ingredients }}
+        </ul>
+    </section>
+
+    <section>
+        <h2>Étapes de préparation</h2>
+        <!-- Pour chaque étape -->
+        {{#each etapes}}
+        <div class="step">
+            <span class="step-number">{{ numero }}</span>
+            <strong>{{ titre_etape }}</strong>
+            <ul>
+                {{#each instructions}}
+                <li>{{ this }}</li>
+                {{/each}}
+            </ul>
+        </div>
+        {{/each}}
+    </section>
+
+    <section class="special">
+        <strong>Astuce créative pour les enfants 🧡 :</strong><br>
+        {{ astuce_enfant }}
+    </section>
+
+    <section>
+        <h2>Valeurs nutritionnelles <span style="font-size:1.1em;">🥦</span></h2>
+        <table class="nutrition-table">
+            <tr>
+                <th>Pour 1 part / {{ portions }}</th>
+                <th>Quantité</th>
+            </tr>
+            <!-- Lignes nutritionnelles ici -->
+            {{ nutrition }}
+        </table>
+        <div style="font-size:0.97em; color:#888; margin-top:7px;">* Selon les ingrédients utilisés.</div>
+    </section>
+
+    <section class="tips">
+        <strong>Conseils nutrition & variantes 💡</strong><br>
+        <ul style="margin-top:7px;">
+            {{ conseils }}
+        </ul>
+    </section>
+</div>
+</body>
+</html>

@@ -8,7 +8,7 @@ recipe_creation:
   expected_output: >
     Une recette complète avec liste d'ingrédients (avec quantités), temps de
     préparation, temps de cuisson, niveau de difficulté, et instructions
-    détaillées étape par étape.
+    détaillées étape par étape, sans '```'.
   agent: recipe_expert
 
 thermomix_adaptation:
@@ -19,7 +19,7 @@ thermomix_adaptation:
     paramètres précis (vitesse, température, durée) pour le Thermomix.
   expected_output: >
     Version Thermomix de la recette avec paramètres précis pour chaque étape,
-    maintenant toutes les saveurs et la qualité de la recette originale.
+    maintenant toutes les saveurs et la qualité de la recette originale, sans '```'.
   agent: thermomix_adapter
 
 nutrition_evaluation:
@@ -30,7 +30,7 @@ nutrition_evaluation:
   expected_output: >
     Analyse nutritionnelle de la recette avec valeurs approximatives
     (calories, macronutriments), points forts nutritionnels, et 2-3
-    suggestions concrètes d'amélioration sans compromettre le goût.
+    suggestions concrètes d'amélioration sans compromettre le goût, sans '```'.
   agent: nutritionist
 
 recipe_integration:
@@ -40,7 +40,7 @@ recipe_integration:
     Proposer des améliorations nutritionnelles adaptées aux enfants.
   expected_output: >
     Version améliorée de la recette Thermomix intégrant les suggestions
-    nutritionnelles, avec les modifications clairement indiquées.
+    nutritionnelles, avec les modifications clairement indiquées, sans '```'.
   agent: recipe_expert
 
 html_creation:
@@ -52,9 +52,10 @@ html_creation:
   expected_output: >
     Code HTML complet pour la recette, avec une mise en page attrayante,
     utilisant des éléments HTML5 et CSS pour une présentation professionnelle.
-    La page doit être en français et peut contenir des emojis.
-    Le titre ne doit contenir que le nom de la recette {recipe_name}
-    La page ne doit pas contenir de markdown ni de ```
+    La page doit être ENTIÈREMENT en français (pas d'anglais) et peut contenir des emojis.
+    Le titre ne doit contenir que le nom de la recette {recipe_name}.
+    IMPORTANT: La page ne doit ABSOLUMENT PAS contenir de délimiteurs markdown comme ``` ou ```html, sans '```'.
+    Le fichier doit contenir UNIQUEMENT le code HTML pur, sans aucun autre balisage ou commentaire.
   agent: specialized_writer
   output_file: "{recipe_html_path}"
 
@@ -62,8 +63,11 @@ paprika_creation:
   description: >
     Créer une version yaml importable par Paprika 3 de la recette {recipe_name}
     avec un format optimisé pour l'application de cuisine Paprika.
-    La page ne doit pas contenir de markdown ni de ```
-    Le nom ne doit contenir que le nom de la recette {recipe_name}.
+    IMPORTANT: Le fichier ne doit ABSOLUMENT PAS contenir de délimiteurs markdown
+    comme ```yaml au début ou ``` à la fin, sans '```'. Le fichier doit contenir UNIQUEMENT
+    le contenu YAML brut sans aucun autre balisage ou commentaire.
+    Le nom doit contenir que le nom de la recette {recipe_name}.
+    TOUTE la recette doit être ENTIÈREMENT en français, y compris les instructions et commentaires.
 
     Paprika donne comme exemple de recette.
 
@@ -95,7 +99,9 @@ paprika_creation:
       Yum yum yum.
 
   expected_output: >
-    Le ficher yaml sans aucune autre information ou aucun autre contenu et sans ```
+    Le ficher yaml brut, sans AUCUN délimiteur markdown (pas de ```yaml ni de ```),
+    sans aucune autre information ou aucun autre contenu supplémentaire, sans '```'
+    Le fichier doit être ENTIÈREMENT en français et directement importable dans Paprika.
   agent: specialized_writer
   output_file: "{recipe_yaml_path}"
 
@@ -106,6 +112,10 @@ ingredient_list:
     Chaque ingrédient doit inclure nom, quantité et unité de mesure.
   expected_output: >
     Liste JSON des ingrédients au format: [{"name": "nom_ingrédient",
-    "quantity": valeur, "unit": "unité"}]
+    "quantity": valeur, "unit": "unité"}].
+    IMPORTANT: Le fichier doit contenir UNIQUEMENT le JSON brut, sans AUCUN délimiteur
+    markdown comme ```json au début ou ``` à la fin, sans '```'
+    . Les noms d'ingrédients et unités doivent
+    être ENTIÈREMENT en français.
   agent: recipe_expert
   output_file: "{recipe_ingredients_path}"
