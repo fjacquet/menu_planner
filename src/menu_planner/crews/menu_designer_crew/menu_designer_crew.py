@@ -7,34 +7,24 @@ from pathlib import Path
 from menu_planner.tools.scrapeninja import ScrapeNinjaTool
 from crewai_tools import (
     SerperDevTool,
-    YoutubeVideoSearchTool,
-    SerplyWebSearchTool,
-    SerplyNewsSearchTool,
 )
-
 
 load_dotenv()
 
 # Initialize the toolset
 # toolset = ComposioToolSet()
 
-# news_tool = SerperDevTool(
-#     n_results=25, save_file=True, search_type="news", country="fr"
-# )
-# search_tool = SerperDevTool(
-#     n_results=25, save_file=True, search_type="search", country="fr"
-# )
-search_tool = SerplyWebSearchTool()
-news_tool = SerplyNewsSearchTool()
+
+search_tool = SerperDevTool(
+    n_results=25, save_file=False, search_type="search", country="fr"
+)
+
 scrape_tool = ScrapeNinjaTool(geo="fr", timeout=10, follow_redirects=1, retry_num=2)
-youtube_tool = YoutubeVideoSearchTool()
 
 # Les instruments sacrés de révélation de la sagesse touristique
 search_tools = [
     search_tool,  # Le bâton d'Aaron - qui fleurit de connaissances
-    news_tool,
     scrape_tool,  # La manne céleste - nourrissant de données
-    youtube_tool,  # Les vidéos sacrées - révélateur d'informations
 ]
 
 # # Initialize the toolset
