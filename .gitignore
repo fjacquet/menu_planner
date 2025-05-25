@@ -6,3 +6,5 @@ existant/
 lib/
 output/
 uv.lock
+db/chroma.sqlite3
+

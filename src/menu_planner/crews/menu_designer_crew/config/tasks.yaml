@@ -2,7 +2,7 @@ recherche_menu:
   description: |
     Recherche et sélection de recettes équilibrées et variées pour une famille de {adults}
     adultes et {children} garçons de {children_age} ans, couvrant le repas du midi (déjeuner)
-    et le repas du soir (dîner) du lundi au dimanche.
+    et le repas du soir (dîner) du lundi au dimanche durant un mois complet.
     Tout le contenu généré (titres, descriptions et labels) doit être en français.
   expected_output: |
     Un JSON structuré.
@@ -17,7 +17,7 @@ recherche_menu:
 
 formattage_html:
   description: |
-    Prendre les recettes recherchées dans {menu_json} et générer un menu hebdomadaire structuré
+    Prendre les recettes recherchées dans {menu_json} et générer un menu mensuel structuré couvrant 4 semaines
     avec titres de jours et repas, en HTML propre et coloré.
     Inclure des touches ludiques et indications de calories.
     Le template : 
@@ -26,14 +26,14 @@ formattage_html:
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
-      <title>Menu Hebdomadaire</title>
+      <title>Menu Mensuel</title>
       <style>
         body {
           background-color: #f5f7fa;
           font-family: 'Segoe UI', Tahoma, sans-serif;
           color: #333;
         }
-        h1 {
+        h1, h2 {
           text-align: center;
           color: #ff7f50;
           margin-top: 20px;
@@ -64,23 +64,25 @@ formattage_html:
       </style>
     </head>
     <body>
-      <h1>Menu de la Semaine</h1>
-      <table>
-        <tr><th>Jour</th><th>Déjeuner</th><th>Dîner</th></tr>
-        {% for day, m in weekly_menu.items() %}
-        <tr>
-          <td>{{ day.capitalize() }}</td>
-          <td><strong>{{ m.lunch.title }}</strong><br>{{ m.lunch.description }}<br><em>{{ m.lunch.calories }} kcal</em></td>
-          <td><strong>{{ m.dinner.title }}</strong><br>{{ m.dinner.description }}<br><em>{{ m.dinner.calories }} kcal</em></td>
-        </tr>
-        {% endfor %}
-      </table>
+      <h1>Menu du Mois</h1>
+      {% for week, weekly_menu in monthly_menu.items() %}
+        <h2>Semaine {{ week }}</h2>
+        <table>
+          <tr><th>Jour</th><th>Déjeuner</th><th>Dîner</th></tr>
+          {% for day, m in weekly_menu.items() %}
+          <tr>
+            <td>{{ day.capitalize() }}</td>
+            <td><strong>{{ m.lunch.title }}</strong><br>{{ m.lunch.description }}<br><em>{{ m.lunch.calories }} kcal</em></td>
+            <td><strong>{{ m.dinner.title }}</strong><br>{{ m.dinner.description }}<br><em>{{ m.dinner.calories }} kcal</em></td>
+          </tr>
+          {% endfor %}
+        </table>
+      {% endfor %}
     </body>
     </html>
 
   expected_output: |
-    Un fichier HTML complet présentant le menu de la semaine, en s’appuyant sur le template défini.
-    Il doit etre stocké dans {menu_html}
+    Un fichier HTML complet présentant le menu mensuel complet (4 semaines), en s’appuyant sur le template défini.
   agent: html_designer
 
 liste_recettes:
@@ -88,18 +90,18 @@ liste_recettes:
     Prendre le menu recherché et extraire la liste des titres des recettes sélectionnées.
     Les titres doivent être en français.
   expected_output: |
-    Un JSON listant les noms des 14 recettes du menu (en français).
+    Un JSON listant les noms des recettes du menu (en français).
     On le stocke dans {recipe_list} sans les ```
   output_file: "output/menu_designer_crew/liste_recettes.json"
   agent: menu_researcher
   dependencies: [recherche_menu]
 
-send_email:
-  description: |
-    Envoyer le menu hebdomadaire par email à {send_to}.
-    Sujet : "Menu de la semaine".
-    Le corps du mail doit contenir le fichier HTML généré {menu_html}.
-  expected_output: |
-    Confirmation d'envoi du mail.
-  dependencies: [formattage_html]
-  agent: gmail_sender
+# send_email:
+#   description: |
+#     Envoyer le menu mensuel par email à {send_to}.
+#     Sujet : "Menu du mois".
+#     Le corps du mail doit contenir le fichier HTML généré {menu_html}.
+#   expected_output: |
+#     Confirmation d'envoi du mail.
+#   dependencies: [formattage_html]
+#   agent: gmail_sender

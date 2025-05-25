@@ -24,7 +24,8 @@ class WeeklyMenu(BaseModel):
     sunday: DayMenu
 
 class MenuJson(BaseModel):
-    weekly_menu: WeeklyMenu
+    # List of weekly menus for the month (4 weeks)
+    monthly_menu: List[WeeklyMenu]
 
 class Poem(BaseModel):
     sentence_count: int = 1

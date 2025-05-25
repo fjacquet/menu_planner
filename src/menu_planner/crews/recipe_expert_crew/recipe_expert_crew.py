@@ -1,22 +1,36 @@
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
-from composio_crewai import ComposioToolSet, App, Action
-from menu_planner.schemas import RecipeIngredient, RecipeOutput, PaprikaRecipe
+
+from menu_planner.schemas import PaprikaRecipe
+from menu_planner.tools.scrapeninja import ScrapeNinjaTool
+from crewai_tools import (
+    SerperDevTool,
+    YoutubeVideoSearchTool,
+    SerplyWebSearchTool,
+    SerplyNewsSearchTool,
+)
+
+
+
 from dotenv import load_dotenv
 
 load_dotenv()
 
 # Initialize the toolset
-toolset = ComposioToolSet()
+# toolset = ComposioToolSet()
 
-search_tools = toolset.get_tools(
-    actions=[
-        "COMPOSIO_SEARCH_DUCK_DUCK_GO_SEARCH",
-        'COMPOSIO_SEARCH_SEARCH',
-    ],
-)
+search_tool = SerplyWebSearchTool()
+news_tool = SerplyNewsSearchTool()
+scrape_tool = ScrapeNinjaTool(geo="fr", timeout=10, follow_redirects=1, retry_num=2)
+youtube_tool = YoutubeVideoSearchTool()
 
-
+# Les instruments sacrés de révélation de la sagesse touristique
+search_tools = [
+    search_tool,  # Le bâton d'Aaron - qui fleurit de connaissances
+    news_tool,
+    scrape_tool,  # La manne céleste - nourrissant de données
+    youtube_tool,  # Les vidéos sacrées - révélateur d'informations
+]
 
 @CrewBase
 class RecipeExpertCrew:
@@ -28,9 +42,11 @@ class RecipeExpertCrew:
     @agent
     def recipe_expert(self) -> Agent:
         return Agent(
-            config=self.agents_config["recipe_expert"], 
+            config=self.agents_config["recipe_expert"],
             tools=search_tools,
-            verbose=True
+            verbose=True,
+            reasoning=True,
+            max_reasoning_attempts=3,  # Optional: Set a limit on reasoning attempts
         )
 
     @agent
@@ -38,7 +54,8 @@ class RecipeExpertCrew:
         return Agent(
             config=self.agents_config["thermomix_adapter"],
             tools=search_tools,
-            
+            reasoning=True,
+            max_reasoning_attempts=3, 
             verbose=True,
         )
 
@@ -46,15 +63,19 @@ class RecipeExpertCrew:
     def nutritionist(self) -> Agent:
         return Agent(
             config=self.agents_config["nutritionist"],
-            tools=search_tools, 
-            verbose=True
+            tools=search_tools,
+            verbose=True,
+            reasoning=True,
+            max_reasoning_attempts=3,
         )
 
 
     def cook_manager(self) -> Agent:
         return Agent(
-            config=self.agents_config['cook_manager'],
-            verbose=True
+            config=self.agents_config["cook_manager"],
+            verbose=True,
+            reasoning=True,
+            max_reasoning_attempts=3,
         )
 
     @agent
@@ -75,7 +96,6 @@ class RecipeExpertCrew:
     def thermomix_adaptation(self) -> Task:
         return Task(
             config=self.tasks_config['thermomix_adaptation'],
-            dependencies=[self.recipe_creation],
             verbose=True,
         )
 
@@ -83,7 +103,6 @@ class RecipeExpertCrew:
     def nutrition_evaluation(self) -> Task:
         return Task(
             config=self.tasks_config['nutrition_evaluation'],
-            dependencies=[self.thermomix_adaptation],
             verbose=True,
         )
 
@@ -91,7 +110,6 @@ class RecipeExpertCrew:
     def recipe_integration(self) -> Task:
         return Task(
             config=self.tasks_config['recipe_integration'],
-            dependencies=[self.nutrition_evaluation],
             verbose=True,
         )
 
@@ -99,7 +117,6 @@ class RecipeExpertCrew:
     def html_creation(self) -> Task:
         return Task(
             config=self.tasks_config["html_creation"],
-            dependencies=[self.recipe_integration],
             verbose=True,
         )
 
@@ -107,8 +124,6 @@ class RecipeExpertCrew:
     def paprika_creation(self) -> Task:
         return Task(
             config=self.tasks_config["paprika_creation"],
-            dependencies=[self.recipe_integration],
-            output_json=PaprikaRecipe,
             verbose=True,
         )
 
@@ -116,7 +131,6 @@ class RecipeExpertCrew:
     def ingredient_list(self) -> Task:
         return Task(
             config=self.tasks_config["ingredient_list"],
-            dependencies=[self.recipe_integration],
             verbose=True,
         )
 
@@ -126,12 +140,12 @@ class RecipeExpertCrew:
         return Crew(
             agents=self.agents,  # Automatically created by the @agent decorator
             tasks=self.tasks,  # Automatically created by the @task decorator
-            process=Process.sequential,
-            verbose=True,
-            memory=False,
-            cache=False,
-            allow_delegation=False,
+            process=Process.hierarchical,
             respect_context_window=True,
+            cache=True,
+            verbose=True,
+            memory=True,
+            planning=True,
             timeout=300,
-            max_rpm=60,
+            manager_llm="ollama/gemma3:latest",
         )

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 from random import randint
 import json
-
 from crewai.flow import Flow, and_, listen, router, start
 
 from menu_planner.schemas import RecipeList, MenuJson, MenuState
@@ -13,6 +12,7 @@ from menu_planner.crews.recipe_expert_crew.recipe_expert_crew import RecipeExper
 from menu_planner.crews.shopping_crew.shopping_crew import ShoppingCrew
 from litellm.exceptions import Timeout as LlmTimeout
 
+# Rest of your imports
 
 """
 """
@@ -50,7 +50,7 @@ class MenuFlow(Flow[MenuState]):
             print(f"Génération d'une recette unique: {MaRecette}")
             self.state.recipe_name = MaRecette
             return
-            
+
         print("Démarrage de la génération du menu hebdomadaire")
         inputs = {
             "adults": self.state.adults,
@@ -63,11 +63,20 @@ class MenuFlow(Flow[MenuState]):
         }
         MenuDesignerCrew().crew().kickoff(inputs=inputs)
 
+        # Load pure JSON now that crew/tasks are non-verbose
         with open("output/menu_designer_crew/liste_recettes.json", "r") as f:
             self.state.recipe_list = RecipeList(**json.load(f))
 
+        # Load pure JSON now that crew/tasks are non-verbose
         with open("output/menu_designer_crew/menu.json", "r") as f:
             self.state.menu_json = MenuJson(**json.load(f))
+
+        # Load menu JSON, stripping any prepended logs
+        # with open("output/menu_designer_crew/menu.json", "r") as f:
+        #     raw = f.read()
+        # start = raw.find('{')
+        # menu_data = json.loads(raw[start:])
+        # self.state.menu_json = MenuJson(**menu_data)
 
     @router(generate_menu)
     def route_menu_or_recipe(self):
@@ -75,7 +84,7 @@ class MenuFlow(Flow[MenuState]):
             return self.generate_single_recipe
         else:
             return self.check_state
-        
+
     @listen(route_menu_or_recipe)
     def generate_single_recipe(self):
         if MaRecette != "":
@@ -84,18 +93,18 @@ class MenuFlow(Flow[MenuState]):
             inputs = {
                 "recipe_name": self.state.recipe_name,
                 "recipe_id": self.state.recipe_name.lower().replace(" ", "_"),
-            "recipe_html_path": f"output/recipe_expert_crew/{self.state.recipe_name.lower().replace(" ", "_")}.html",
-            "recipe_yaml_path": f"output/recipe_expert_crew/{self.state.recipe_name.lower().replace(" ", "_")}.yaml",
+                "recipe_html_path": f"output/recipe_expert_crew/{self.state.recipe_name.lower().replace(" ", "_")}.html",
+                "recipe_yaml_path": f"output/recipe_expert_crew/{self.state.recipe_name.lower().replace(" ", "_")}.yaml",
                 "recipe_ingredients_path": f"output/recipe_expert_crew/{self.state.recipe_name.lower().replace(" ", "_")}_ingredients.json",
-                "menu_json": self.state.menu_json,  
+                "menu_json": self.state.menu_json,
             }
             RecipeExpertCrew().crew().kickoff(inputs=inputs)
             print(f"Recette générée: {self.state.recipe_name}")
-        
+
 
 
     @router(and_("generate_menu", "generate_poem"))
-    def check_state(self):  
+    def check_state(self):
 
         recipes = self.state.recipe_list
         print("Recipes", recipes)
@@ -112,26 +121,26 @@ class MenuFlow(Flow[MenuState]):
             "menu_json": self.state.menu_json.model_dump() if self.state.menu_json else None,
             "recipe_list": self.state.recipe_list.model_dump() if self.state.recipe_list else None,
             "poem": self.state.poem,
-            }   
+            }
         HtmlDesignCrew().crew().kickoff(inputs=inputs)
 
     @listen(insert_poem)
     def prepare_recipes(self):
         recipe_list = self.state.recipe_list
-        
+
         # Lists to track generated files
         recipe_ids = []
         recipe_htmls = []
         recipe_yamls = []
         recipe_ingredients_files = []
-        
+
         if recipe_list:
             for recipe_name in recipe_list.recipes:
                 recipe_id = recipe_name.lower().replace(" ", "_")
                 recipe_html = f"output/recipe_expert_crew/{recipe_id}.html"
                 recipe_yaml = f"output/recipe_expert_crew/{recipe_id}.yaml"
                 recipe_ingredients = f"output/recipe_expert_crew/{recipe_id}_ingredients.json"
-                
+
                 # Process each recipe
                 try:
                     RecipeExpertCrew().crew().kickoff(
@@ -153,7 +162,7 @@ class MenuFlow(Flow[MenuState]):
                 recipe_ingredients_files.append(recipe_ingredients)
         else:
             print("No recipes found.")
-        
+
         # Save tracked lists to state for use in shopping_list
         self.state.recipe_ids = recipe_ids
         self.state.recipe_htmls = recipe_htmls

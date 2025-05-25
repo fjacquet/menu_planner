@@ -44,7 +44,6 @@ class ShoppingCrew:
     def organize_by_category(self) -> Task:
         return Task(
             config=self.tasks_config['organize_by_category'],
-            dependencies=[self.aggregate_ingredients],
             verbose=True
         )
 
@@ -52,7 +51,6 @@ class ShoppingCrew:
     def create_html_shopping_list(self) -> Task:
         return Task(
             config=self.tasks_config['create_html_shopping_list'],
-            dependencies=[self.organize_by_category],
             output_file="output/shopping_crew/liste_courses.html",
             verbose=True
         )
@@ -61,7 +59,6 @@ class ShoppingCrew:
     def create_markdown_shopping_list(self) -> Task:
         return Task(
             config=self.tasks_config['create_markdown_shopping_list'],
-            dependencies=[self.organize_by_category],
             output_file="output/shopping_crew/liste_courses.md",
             verbose=True
         )
@@ -72,6 +69,6 @@ class ShoppingCrew:
         return Crew(
             agents=self.agents,  # Automatically created by the @agent decorator
             tasks=self.tasks,  # Automatically created by the @task decorator
-            process=Process.sequential,
+            process=Process.hierarchical,
             verbose=True,
         )
