@@ -1,44 +1,13 @@
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
-from menu_planner.schemas import RecipeList, MenuJson
-# from composio_crewai import ComposioToolSet
+from menu_planner.schemas import MenuJson  # RecipeList handled through the consolidated task
 from dotenv import load_dotenv
 from pathlib import Path
-from menu_planner.tools.scrapeninja import ScrapeNinjaTool
-from crewai_tools import (
-    SerperDevTool,
-)
+
 
 load_dotenv()
 
-# Initialize the toolset
-# toolset = ComposioToolSet()
-
-
-search_tool = SerperDevTool(
-    n_results=25, save_file=False, search_type="search", country="fr"
-)
-
-scrape_tool = ScrapeNinjaTool(geo="fr", timeout=10, follow_redirects=1, retry_num=2)
-
-# Les instruments sacrés de révélation de la sagesse touristique
-search_tools = [
-    search_tool,  # Le bâton d'Aaron - qui fleurit de connaissances
-    scrape_tool,  # La manne céleste - nourrissant de données
-]
-
-# # Initialize the toolset
-# toolset = ComposioToolSet()
-
-# # search_tools = toolset.get_tools(
-# #     actions=[
-# #         "COMPOSIO_SEARCH_DUCK_DUCK_GO_SEARCH",
-# #         "COMPOSIO_SEARCH_SHOPPING_SEARCH",
-# #         "COMPOSIO_SEARCH_SEARCH",
-# #     ],
-# # )
-# gmail = toolset.get_tools(actions=['GMAIL_SEND_EMAIL'])
-
+# Initiali
 # If you want to run a snippet of code before or after the crew starts,
 # you can use the @before_kickoff and @after_kickoff decorators
 # https://docs.crewai.com/concepts/crews#example-crew-class-with-decorators
@@ -52,63 +21,49 @@ class MenuDesignerCrew:
     agents_config = str(Path(__file__).parent / "config" / "agents.yaml")
     tasks_config = str(Path(__file__).parent / "config" / "tasks.yaml")
 
-    # If you would like to add tools to your agents, you can learn more about it here:
-    # https://docs.crewai.com/concepts/agents#agent-tools
     @agent
-    def menu_researcher(self) -> Agent:
+    def menu_planner_specialist(self) -> Agent:
+        """
+        Spécialiste en planification de menu qui combine les compétences 
+        de recherche et de présentation de menus familiaux.
+        
+        Cet agent unique gère à la fois la création du menu équilibré
+        et sa présentation dans différents formats (JSON, HTML).
+        """
         return Agent(
-            config=self.agents_config["menu_researcher"],
-            tools=search_tools,
+            config=self.agents_config["menu_planner_specialist"],
             verbose=True,
             reasoning=True,
-            max_reasoning_attempts=3,  # Optional: Set a limit on reasoning attempts
+            max_reasoning_attempts=3,
         )
 
-    @agent
-    def html_designer(self) -> Agent:
-        return Agent(
-            config=self.agents_config["html_designer"],
-            verbose=True,
-        )
-
-    # @agent
-    # def gmail_sender(self) -> Agent:
-    #     return Agent(
-    #         config=self.agents_config["gmail_sender"],
-    #         tools=gmail,
-    #         verbose=True,
-    #     )
-
-    # To learn more about structured task outputs,
-    # task dependencies, and task callbacks, check out the documentation:
-    # https://docs.crewai.com/concepts/tasks#overview-of-a-task
     @task
-    def recherche_menu_task(self) -> Task:
+    def generate_complete_menu_task(self) -> Task:
+        """
+        Génère simultanément le menu complet et la liste des recettes.
+        
+        Cette tâche consolidée produit en une seule opération les deux structures
+        JSON nécessaires pour le workflow: le menu détaillé et la liste des recettes.
+        """
         return Task(
-            config=self.tasks_config["recherche_menu"],
-            output_file="output/menu_designer_crew/menu.json",
+            config=self.tasks_config["generate_complete_menu"],
+            output_file="output/menu_designer_crew/menu.json",  # Primary output
             output_json=MenuJson,
-            tools=search_tools,
-
             verbose=True,
         )
 
     @task
-    def formattage_html_task(self) -> Task:
+    def create_html_presentation_task(self) -> Task:
+        """
+        Crée une présentation HTML attrayante du menu.
+        
+        Cette tâche génère un fichier HTML complet à partir des données du menu
+        en utilisant un template optimisé pour l'affichage et la lisibilité.
+        """
         return Task(
-            config=self.tasks_config["formattage_html"],
+            config=self.tasks_config["create_html_presentation"],
             output_file="output/menu_designer_crew/menu.html",
             verbose=True,
-        )
-
-    @task
-    def liste_recettes_task(self) -> Task:
-        return Task(
-            config=self.tasks_config["liste_recettes"],
-            output_file="output/menu_designer_crew/liste_recettes.json",
-            output_json=RecipeList,
-            stream=False,
-            verbose=False,
         )
 
     # @task
@@ -130,7 +85,6 @@ class MenuDesignerCrew:
             tasks=self.tasks,  # Automatically created by the @task decorator
             respect_context_window=True,
             timeout=300,
-            manager_llm="ollama/gemma3:latest",
+            process=Process.sequential,
             verbose=True,  # disable crew-level logging to JSON
-            # process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/
         )

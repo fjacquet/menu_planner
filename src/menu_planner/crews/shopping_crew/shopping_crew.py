@@ -69,6 +69,8 @@ class ShoppingCrew:
         return Crew(
             agents=self.agents,  # Automatically created by the @agent decorator
             tasks=self.tasks,  # Automatically created by the @task decorator
-            process=Process.hierarchical,
+            process=Process.sequential,
+            respect_context_window=True,
+            timeout=300,
             verbose=True,
         )

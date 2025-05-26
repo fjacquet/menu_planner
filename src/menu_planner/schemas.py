@@ -24,12 +24,9 @@ class WeeklyMenu(BaseModel):
     sunday: DayMenu
 
 class MenuJson(BaseModel):
-    # List of weekly menus for the month (4 weeks)
-    monthly_menu: List[WeeklyMenu]
+    # Weekly menu structure
+    menu: WeeklyMenu
 
-class Poem(BaseModel):
-    sentence_count: int = 1
-    poem: str = ""
 
 class RecipeIngredient(BaseModel):
     name: str
@@ -41,22 +38,27 @@ class RecipeOutput(BaseModel):
     ingredients: list[RecipeIngredient]
 
 class MenuState(BaseModel):
-    # Paramters
+    # Parameters
     adults: int = int(os.getenv("ADULTS", "2"))
     children_age: int = int(os.getenv("CHILDREN_AGE", "10"))
     children: int = int(os.getenv("CHILDREN", "1"))
     menu_html: str = ""
     menu_json: Optional[MenuJson] = None
-    poem: str = ""
     # Recipe tracking lists
     recipe_htmls: list[str] = []
     recipe_ids: list[str] = []
     recipe_ingredients_files: list[str] = []
+    recipe_inputs: list = []
+    # Processing state
+    parallel_results: list = []
+    processing_mode: str = ""
     recipe_list: Optional[RecipeList] = None
     recipe_name: Optional[str] = None
     recipe_yamls: list[str] = []
     send_to: str = os.getenv("MAILTO", "a@a.aa")
     sentence_count: int = 1
+    # HTML generation result
+    html_result: Optional[str] = None
 
 class PaprikaRecipe(BaseModel):
     name: str

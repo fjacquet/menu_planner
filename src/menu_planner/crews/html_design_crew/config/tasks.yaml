@@ -1,6 +1,6 @@
 html_menu_task:
   description: >
-    À partir du contenu du menu hebdomadaire {menu_json} et du poème {poem},
+    À partir du contenu du menu hebdomadaire {menu_json},
     génère un menu HTML professionnel, élégant et lisible. Le menu doit être
     structuré par jour et par repas (petit-déjeuner,déjeuner et dîner), avec
     des titres, des descriptions, des calories, et des emojis appropriés pour

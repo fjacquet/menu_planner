@@ -1,119 +1,183 @@
-recipe_creation:
+recipe_development:
   description: >
-    À partir du titre de recette "{recipe_name}", élaborer une recette
-    détaillée avec ingrédients, proportions et instructions précises pour une
-    famille de 2 adultes et un enfant de 10 ans. La recette doit être
-    délicieuse, accessible et présenter une touche créative qui rendra le plat
-    attrayant pour un enfant sans sacrifier le goût pour les adultes.
+    À partir du titre de recette "{recipe_name}", développer une recette complète en trois étapes:
+    1. Élaborer une recette détaillée avec ingrédients, proportions et instructions précises pour une famille de {adults} adultes et {children} enfant(s) de {children_age} ans.
+    2. Adapter la recette pour utilisation avec un Thermomix, en fournissant des paramètres précis (vitesse, température, durée).
+    3. Intégrer des suggestions nutritionnelles adaptées aux enfants tout en préservant la saveur et la facilité de préparation.
+    
+    La recette doit être délicieuse, accessible et présenter une touche créative qui la rendra attrayante pour un enfant sans sacrifier le goût pour les adultes.
   expected_output: >
-    Une recette complète avec liste d'ingrédients (avec quantités), temps de
-    préparation, temps de cuisson, niveau de difficulté, et instructions
-    détaillées étape par étape, sans '```'.
-  agent: recipe_expert
-
-thermomix_adaptation:
-  description: >
-    Adapter la recette pour utilisation avec un Thermomix. La recette est
-    basée sur ce plat : {recipe_name}   
-    Fournir des instructions claires pour chaque étape, en indiquant les
-    paramètres précis (vitesse, température, durée) pour le Thermomix.
-  expected_output: >
-    Version Thermomix de la recette avec paramètres précis pour chaque étape,
-    maintenant toutes les saveurs et la qualité de la recette originale, sans '```'.
-  agent: thermomix_adapter
+    Une recette complète au format Thermomix, nutritionnellement optimisée, comprenant:
+    - Liste d'ingrédients avec quantités précises
+    - Temps de préparation et de cuisson
+    - Niveau de difficulté
+    - Instructions détaillées étape par étape avec paramètres Thermomix
+    - Adaptations nutritionnelles clairement indiquées
+    Sans aucun délimiteur markdown.
+  agent: culinary_expert
 
 nutrition_evaluation:
   description: >
     Évaluer le profil nutritionnel de la recette pour : {recipe_name} 
     Identifier les points forts et les améliorations possibles du point de vue nutritionnel,
-    particulièrement en considérant qu'elle sera servie à un enfant de 10 ans.
+    particulièrement en considérant qu'elle sera servie à un enfant de {children_age} ans.
   expected_output: >
-    Analyse nutritionnelle de la recette avec valeurs approximatives
-    (calories, macronutriments), points forts nutritionnels, et 2-3
-    suggestions concrètes d'amélioration sans compromettre le goût, sans '```'.
+    Analyse nutritionnelle complète de la recette incluant:
+    - Valeurs approximatives (calories, macronutriments)
+    - Points forts nutritionnels
+    - 2-3 suggestions concrètes d'amélioration sans compromettre le goût
+    Sans aucun délimiteur markdown.
   agent: nutritionist
 
-recipe_integration:
-  description: >
-    Intégrer des suggestions nutritionnelles à la recette Thermomix pour 
-    {recipe_name}, tout en préservant la saveur et la facilité de préparation.
-    Proposer des améliorations nutritionnelles adaptées aux enfants.
+generate_html:
+  description: |
+    Générer une version HTML élégante et bien structurée pour la recette {recipe_name} en utilisant le template fourni.
+    
+    INSTRUCTIONS DÉTAILLÉES :
+    1. Utiliser le template situé à : "src/menu_planner/crews/recipe_expert_crew/template.html"
+    2. Remplir TOUS les champs du template avec des valeurs appropriées :
+       - {{ nom_recette }} : Le nom de la recette
+       - {{ sous_titre }} : Une brève description de la recette
+       - {{ portions }} : Nombre de portions (ex: "4 personnes")
+       - {{ temps_preparation }} : Temps de préparation (ex: "15 min")
+       - {{ temps_cuisson }} : Temps de cuisson (ex: "30 min")
+       - {{ temps_repos }} : Temps de repos si nécessaire (ex: "1h")
+       - {{ difficulte }} : Niveau de difficulté (ex: "Facile", "Moyen", "Difficile")
+       - {{ cout }} : Coût approximatif (ex: "Économique", "Moyen", "Coûteux")
+       - {{ ingredients }} : Liste des ingrédients formatée en HTML
+       - {{ etapes }} : Étapes de préparation formatées en HTML
+    3. La page doit être ENTIÈREMENT en français
+    4. Utiliser des emojis pour améliorer la lisibilité
+    5. Le HTML final doit être bien formaté et valide
+    
+    IMPORTANT : Le fichier de sortie doit contenir UNIQUEMENT le HTML final, sans aucun commentaire ni délimiteur markdown.
   expected_output: >
-    Version améliorée de la recette Thermomix intégrant les suggestions
-    nutritionnelles, avec les modifications clairement indiquées, sans '```'.
-  agent: recipe_expert
+    Un fichier HTML bien structuré contenant tous les éléments de la recette, prêt à être affiché dans un navigateur.
+  agent: formatting_specialist
+  output_files:
+    html: "{recipe_html_path}"
 
-html_creation:
+generate_yaml:
   description: >
-    Créer une version HTML élégante et bien structurée de la recette finale pour {recipe_name},
-    en utilisant obligatoirement le template HTML situé à "src/menu_planner/crews/recipe_expert_crew/template.html".
-    Tous les champs du template doivent être remplis à partir des données de la recette (nom_recette, sous_titre, portions, temps_preparation, temps_cuisson, difficulte, ingredients, instructions, valeurs_nutritionnelles, conseils, etc).
-    La présentation doit être professionnelle, facile à lire, et respecter la structure et le style définis dans le template.
-    La page doit être ENTIÈREMENT en français (pas d'anglais) et peut contenir des emojis.
-    IMPORTANT : Le fichier généré ne doit contenir que le code HTML pur produit à partir du template, sans aucun délimiteur markdown ni commentaire.
-  expected_output: >
-    Code HTML complet pour la recette, généré à partir du template fourni, avec toutes les sections correctement remplies.
-    Le fichier doit contenir UNIQUEMENT le code HTML pur, sans aucun autre balisage ou commentaire.
-  agent: specialized_writer
-  output_file: "{recipe_html_path}"
-
-paprika_creation:
-  description: >
-    Créer une version yaml importable par Paprika 3 de la recette {recipe_name}
-    avec un format optimisé pour l'application de cuisine Paprika.
-    IMPORTANT: Le fichier ne doit ABSOLUMENT PAS contenir de délimiteurs markdown
-    comme ```yaml au début ou ``` à la fin, sans '```'. Le fichier doit contenir UNIQUEMENT
-    le contenu YAML brut sans aucun autre balisage ou commentaire.
-    Le nom doit contenir que le nom de la recette {recipe_name}.
-    TOUTE la recette doit être ENTIÈREMENT en français, y compris les instructions et commentaires.
-
-    Paprika donne comme exemple de recette.
-
-    name: My Tasty Recipe
-    servings: 4-6 servings
-    source: Food Network
-    source_url: http://www.google.com
-    prep_time: 10 min
-    cook_time: 30 min
-    on_favorites: yes
-    categories: [Dinner, Holiday]
-    nutritional_info: 500 calories
-    difficulty: Easy
+    Générer une version YAML compatible Paprika 3 pour la recette {recipe_name}.
+    
+    Créer une version yaml importable par Paprika 3 au format EXACT suivant, en français:
+    
+    name: Gratin Dauphinois Traditionnel
+    servings: 4 portions
+    source: Cuisine Française Traditionnelle
+    source_url: https://www.cuisinefrancaise.org/gratin-dauphinois
+    prep_time: 15 min
+    cook_time: 60 min
+    on_favorites: oui
+    categories: [Plats principaux, Accompagnements, Cuisine française]
+    nutritional_info: 350 calories par portion
+    difficulty: Moyen
     rating: 5
     notes: |
-      This is delicious!!!
-    photo: (base-64 encoded image)
+      Cette recette traditionnelle du Dauphiné est particulièrement savoureuse avec des pommes de terre à chair ferme.
+      Pour une version plus légère, vous pouvez remplacer une partie de la crème par du lait.
     ingredients: |
-      1/2 lb meat
-      1/2 lb vegetables
-      salt
-      pepper
-      2 tbsp olive oil
-      4 cups flour
+      1 kg de pommes de terre à chair ferme
+      300 ml de crème fraîche
+      200 ml de lait entier
+      2 gousses d'ail écrasées
+      1 feuille de laurier
+      1 branche de thym
+      1 pincée de muscade râpée
+      sel et poivre du moulin
+      30 g de beurre pour le plat
     directions: |
-      Mix things together.
-      Eat.
-      Tasty.
-      Yum yum yum.
-
+      1. Préchauffer le four à 180°C (thermostat 6).
+      2. Éplucher les pommes de terre et les laver soigneusement.
+      3. Les couper en rondelles fines et régulières (environ 3 mm d'épaisseur).
+      4. Frotter un plat à gratin avec une gousse d'ail écrasée, puis le beurrer généreusement.
+      5. Dans une casserole, faire chauffer la crème et le lait avec l'ail restant, la feuille de laurier et le thym.
+      6. Assaisonner avec du sel, du poivre et de la muscade, puis laisser infuser 10 minutes à feu doux.
+      7. Retirer les aromates et verser un peu de crème au fond du plat.
+      8. Disposer une couche de pommes de terre, saler, poivrer, puis ajouter un peu de crème.
+      9. Répéter l'opération jusqu'à épuisement des ingrédients, en terminant par la crème.
+      10. Enfourner pour 60 minutes environ, jusqu'à ce que les pommes de terre soient tendres et que le dessus soit bien doré.
+      11. Laisser reposer 5 minutes avant de servir.
+    
+    IMPORTANT: Suivre EXACTEMENT ce format. Tous les champs doivent être présents et correctement formatés.
   expected_output: >
-    Le ficher yaml brut, sans AUCUN délimiteur markdown (pas de ```yaml ni de ```),
-    sans aucune autre information ou aucun autre contenu supplémentaire, sans '```'
-    Le fichier doit être ENTIÈREMENT en français et directement importable dans Paprika.
-  agent: specialized_writer
-  output_file: "{recipe_yaml_path}"
+    Un fichier YAML compatible avec Paprika 3, suivant exactement le format demandé et contenant toutes les informations de la recette.
+  agent: formatting_specialist
+  output_files:
+    yaml: "{recipe_yaml_path}"
 
-ingredient_list:
-  description: >
-    À partir de la recette finale pour {recipe_name}  , générer une liste JSON
-    structurée de tous les ingrédients nécessaires avec leurs quantités.
-    Chaque ingrédient doit inclure nom, quantité et unité de mesure.
+generate_ingredients_json:
+  description: |
+    Générer une liste d'ingrédients au format JSON pour la recette {recipe_name}.
+    
+    Créer une liste JSON structurée de tous les ingrédients avec le format EXACT suivant:
+    
+    [
+      {
+        "name": "pommes de terre à chair ferme",
+        "quantity": 1,
+        "unit": "kg"
+      },
+      {
+        "name": "crème fraîche",
+        "quantity": 300,
+        "unit": "ml"
+      },
+      {
+        "name": "lait entier",
+        "quantity": 200,
+        "unit": "ml"
+      },
+      {
+        "name": "gousses d'ail",
+        "quantity": 2,
+        "unit": "unités"
+      },
+      {
+        "name": "feuille de laurier",
+        "quantity": 1,
+        "unit": "unité"
+      },
+      {
+        "name": "branche de thym",
+        "quantity": 1,
+        "unit": "unité"
+      },
+      {
+        "name": "muscade râpée",
+        "quantity": 1,
+        "unit": "pincée"
+      },
+      {
+        "name": "sel",
+        "quantity": 1,
+        "unit": "au goût"
+      },
+      {
+        "name": "poivre du moulin",
+        "quantity": 1,
+        "unit": "au goût"
+      },
+      {
+        "name": "beurre",
+        "quantity": 30,
+        "unit": "g"
+      }
+    ]
+    
+    INSTRUCTIONS IMPORTANTES:
+    1. Le fichier de sortie DOIT contenir UNIQUEMENT le tableau JSON, sans aucun texte supplémentaire
+    2. Ne pas inclure de marqueurs de code (comme ```json ou ```)
+    3. Ne pas inclure de commentaires ou de texte explicatif
+    4. Tous les noms d'ingrédients doivent être en français
+    5. Vérifier que le JSON est valide avant de le retourner
+    6. Ne pas inclure de "Thought:" ou de raisonnement dans la sortie
+    7. La sortie doit commencer par [ et se terminer par ]
+    
+    Votre réponse doit être UNIQUEMENT le JSON valide, sans aucun autre texte.
   expected_output: >
-    Liste JSON des ingrédients au format: [{"name": "nom_ingrédient",
-    "quantity": valeur, "unit": "unité"}].
-    IMPORTANT: Le fichier doit contenir UNIQUEMENT le JSON brut, sans AUCUN délimiteur
-    markdown comme ```json au début ou ``` à la fin, sans '```'
-    . Les noms d'ingrédients et unités doivent
-    être ENTIÈREMENT en français.
-  agent: recipe_expert
-  output_file: "{recipe_ingredients_path}"
+    Un fichier JSON contenant la liste structurée des ingrédients avec leurs quantités et unités de mesure.
+  agent: formatting_specialist
+  output_files:
+    ingredients: "{recipe_ingredients_path}"

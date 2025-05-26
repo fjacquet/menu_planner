@@ -1,32 +1,67 @@
-recherche_menu:
+generate_complete_menu:
   description: |
-    Recherche et sélection de recettes équilibrées et variées pour une famille de {adults}
-    adultes et {children} garçons de {children_age} ans, couvrant le repas du midi (déjeuner)
-    et le repas du soir (dîner) du lundi au dimanche durant un mois complet.
-    Tout le contenu généré (titres, descriptions et labels) doit être en français.
+    Développer un plan de menu complet pour une famille de {adults} adultes et {children} enfant(s) de {children_age} ans. 
+    Ce menu doit:
+    
+    1. Couvrir tous les repas du midi (déjeuner) et du soir (dîner) du lundi au dimanche pour une semaine.
+    2. Proposer des recettes équilibrées et variées avec une attention particulière aux besoins spéciaux.
+    3. Le père a de l'hypertension et est obèse - adapter les suggestions pour améliorer sa santé.
+    4. Générer simultanément:
+       a. Un fichier JSON structuré du menu complet avec titre, description et calories pour chaque repas
+       b. Une liste de toutes les recettes au format JSON pour traitement ultérieur
+    
+    5. Tout le contenu (titres, descriptions et labels) doit être intégralement en français.
+    
   expected_output: |
-    Un JSON structuré.
-    Chaque entrée "dejeuner" et "diner" doit contenir:
-    - title: titre de la recette (en français)
-    - description: texte bref (en français)
-    - calories: nombre
-    on le stocke dans {menu_json} sans les ```
-    Tous les textes sont en français.
-  output_file: "output/menu_designer_crew/menu.json"
-  agent: menu_researcher
+    Génération simultanée de deux structures JSON:
+    
+    1. UN MENU COMPLET structuré au format suivant:
+    ```json
+    {
+      "monday": {
+        "lunch": {
+          "title": "Titre de la recette",
+          "description": "Description brève",
+          "calories": 450
+        },
+        "dinner": { ... }
+      },
+      "tuesday": { ... },
+      ...
+    }
+    ```
+    
+    2. UNE LISTE DE RECETTES au format suivant:
+    ```json
+    {
+      "recipes": ["Titre recette 1", "Titre recette 2", ...]
+    }
+    ```
+    
+    Les deux structures JSON doivent être entièrement en français, sans délimiteurs markdown dans les versions finales.
+  output_files:
+    menu_json: "output/menu_designer_crew/menu.json"
+    recipe_list: "output/menu_designer_crew/liste_recettes.json"
+  agent: menu_planner_specialist
 
-formattage_html:
+create_html_presentation:
   description: |
-    Prendre les recettes recherchées dans {menu_json} et générer un menu mensuel structuré couvrant 4 semaines
-    avec titres de jours et repas, en HTML propre et coloré.
-    Inclure des touches ludiques et indications de calories.
-    Le template : 
+    Créer une présentation HTML attrayante et fonctionnelle du menu hebdomadaire basée sur le JSON généré précédemment.
+    
+    La présentation doit:
+    1. Suivre une structure claire de type agenda/calendrier
+    2. Inclure des touches visuelles adaptées aux familles avec enfants
+    3. Afficher clairement les informations nutritionnelles (calories)
+    4. Être responsive et facile à lire sur différents appareils
+    5. Utiliser le template HTML fourni comme base
+    
+    Le template à utiliser est:
     <!DOCTYPE html>
     <html lang="fr">
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
-      <title>Menu Mensuel</title>
+      <title>Menu Hebdomadaire</title>
       <style>
         body {
           background-color: #f5f7fa;
@@ -64,37 +99,53 @@ formattage_html:
       </style>
     </head>
     <body>
-      <h1>Menu du Mois</h1>
-      {% for week, weekly_menu in monthly_menu.items() %}
-        <h2>Semaine {{ week }}</h2>
-        <table>
-          <tr><th>Jour</th><th>Déjeuner</th><th>Dîner</th></tr>
-          {% for day, m in weekly_menu.items() %}
-          <tr>
-            <td>{{ day.capitalize() }}</td>
-            <td><strong>{{ m.lunch.title }}</strong><br>{{ m.lunch.description }}<br><em>{{ m.lunch.calories }} kcal</em></td>
-            <td><strong>{{ m.dinner.title }}</strong><br>{{ m.dinner.description }}<br><em>{{ m.dinner.calories }} kcal</em></td>
-          </tr>
-          {% endfor %}
-        </table>
-      {% endfor %}
+      <h1>Menu de la Semaine</h1>
+      <table>
+        <tr><th>Jour</th><th>Déjeuner</th><th>Dîner</th></tr>
+        <tr>
+          <td>Lundi</td>
+          <td><strong>{{ menu.monday.lunch.title }}</strong><br>{{ menu.monday.lunch.description }}<br><em>{{ menu.monday.lunch.calories }} kcal</em></td>
+          <td><strong>{{ menu.monday.dinner.title }}</strong><br>{{ menu.monday.dinner.description }}<br><em>{{ menu.monday.dinner.calories }} kcal</em></td>
+        </tr>
+        <tr>
+          <td>Mardi</td>
+          <td><strong>{{ menu.tuesday.lunch.title }}</strong><br>{{ menu.tuesday.lunch.description }}<br><em>{{ menu.tuesday.lunch.calories }} kcal</em></td>
+          <td><strong>{{ menu.tuesday.dinner.title }}</strong><br>{{ menu.tuesday.dinner.description }}<br><em>{{ menu.tuesday.dinner.calories }} kcal</em></td>
+        </tr>
+        <tr>
+          <td>Mercredi</td>
+          <td><strong>{{ menu.wednesday.lunch.title }}</strong><br>{{ menu.wednesday.lunch.description }}<br><em>{{ menu.wednesday.lunch.calories }} kcal</em></td>
+          <td><strong>{{ menu.wednesday.dinner.title }}</strong><br>{{ menu.wednesday.dinner.description }}<br><em>{{ menu.wednesday.dinner.calories }} kcal</em></td>
+        </tr>
+        <tr>
+          <td>Jeudi</td>
+          <td><strong>{{ menu.thursday.lunch.title }}</strong><br>{{ menu.thursday.lunch.description }}<br><em>{{ menu.thursday.lunch.calories }} kcal</em></td>
+          <td><strong>{{ menu.thursday.dinner.title }}</strong><br>{{ menu.thursday.dinner.description }}<br><em>{{ menu.thursday.dinner.calories }} kcal</em></td>
+        </tr>
+        <tr>
+          <td>Vendredi</td>
+          <td><strong>{{ menu.friday.lunch.title }}</strong><br>{{ menu.friday.lunch.description }}<br><em>{{ menu.friday.lunch.calories }} kcal</em></td>
+          <td><strong>{{ menu.friday.dinner.title }}</strong><br>{{ menu.friday.dinner.description }}<br><em>{{ menu.friday.dinner.calories }} kcal</em></td>
+        </tr>
+        <tr>
+          <td>Samedi</td>
+          <td><strong>{{ menu.saturday.lunch.title }}</strong><br>{{ menu.saturday.lunch.description }}<br><em>{{ menu.saturday.lunch.calories }} kcal</em></td>
+          <td><strong>{{ menu.saturday.dinner.title }}</strong><br>{{ menu.saturday.dinner.description }}<br><em>{{ menu.saturday.dinner.calories }} kcal</em></td>
+        </tr>
+        <tr>
+          <td>Dimanche</td>
+          <td><strong>{{ menu.sunday.lunch.title }}</strong><br>{{ menu.sunday.lunch.description }}<br><em>{{ menu.sunday.lunch.calories }} kcal</em></td>
+          <td><strong>{{ menu.sunday.dinner.title }}</strong><br>{{ menu.sunday.dinner.description }}<br><em>{{ menu.sunday.dinner.calories }} kcal</em></td>
+        </tr>
+      </table>
     </body>
     </html>
 
   expected_output: |
-    Un fichier HTML complet présentant le menu mensuel complet (4 semaines), en s’appuyant sur le template défini.
-  agent: html_designer
-
-liste_recettes:
-  description: |
-    Prendre le menu recherché et extraire la liste des titres des recettes sélectionnées.
-    Les titres doivent être en français.
-  expected_output: |
-    Un JSON listant les noms des recettes du menu (en français).
-    On le stocke dans {recipe_list} sans les ```
-  output_file: "output/menu_designer_crew/liste_recettes.json"
-  agent: menu_researcher
-  dependencies: [recherche_menu]
+    Un fichier HTML complet présentant le menu hebdomadaire, en utilisant le template fourni et en intégrant toutes les données du menu JSON. Le fichier doit être validé et prêt à être visualisé dans un navigateur.
+  output_file: "output/menu_designer_crew/menu.html"
+  agent: menu_planner_specialist
+  dependencies: [generate_complete_menu]
 
 # send_email:
 #   description: |

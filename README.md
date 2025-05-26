@@ -4,7 +4,7 @@
 
 ## Vue d'ensemble
 
-Menu Planner est un système avancé de planification de menus mensuels pour familles, propulsé par le framework CrewAI. Cette application orchestrée par IA divise intelligemment les tâches entre plusieurs agents spécialisés pour créer une expérience complète de planification alimentaire.
+Menu Planner est un système avancé de planification de menus hebdomadaires pour familles, propulsé par le framework CrewAI. Cette application orchestrée par IA divise intelligemment les tâches entre plusieurs agents spécialisés pour créer une expérience complète de planification alimentaire.
 
 ### Agents spécialisés
 
@@ -12,12 +12,11 @@ Menu Planner est un système avancé de planification de menus mensuels pour fam
 - **Recipe Expert**: Analyse nutritionnelle et adaptation des recettes (compatible Thermomix)
 - **Shopping Crew**: Génération d'une liste de courses organisée par catégorie
 - **HTML Design Crew**: Création d'une présentation visuelle du menu mensuel
-- **Poem Crew**: Génération de contenu créatif sur le thème de la nutrition
 
 ### Caractéristiques principales
 
 - **Architecture multi-agents** avec [CrewAI Flow](https://docs.crewai.com/concepts/Flow/) pour un traitement en parallèle
-- **Génération complète de menu mensuel** couvrant déjeuners et dîners
+- **Génération complète de menu hebdomadaire** couvrant déjeuners et dîners
 - **Analyse nutritionnelle** avec estimation des calories
 - **Adaptation Thermomix** des recettes pour une préparation simplifiée
 - **Traitement parallèle des recettes** grâce à `kickoff_for_each` pour une exécution optimisée
@@ -117,9 +116,6 @@ menu_planner/
 │   ├── schemas.py      # Modèles Pydantic pour validation et état global
 │   ├── tools/          # Outils personnalisés (scrapeninja, etc.)
 │   └── crews/          # Organisation des agents par spécialité
-│       ├── poem_crew/              # Génération de poèmes
-│       │   ├── config/            # Configuration YAML des agents et tâches
-│       │   └── poem_crew.py       # Implémentation des agents
 │       ├── recipe_expert_crew/    # Analyse et adaptation des recettes
 │       ├── menu_designer_crew/    # Création du menu mensuel
 │       ├── shopping_crew/         # Génération de liste de courses
